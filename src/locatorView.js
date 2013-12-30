@@ -1,5 +1,4 @@
 /*global define */
-/*jslint undef: false */
 define([
         "locator/bootstrap"
     ], function (

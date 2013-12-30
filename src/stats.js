@@ -1,5 +1,4 @@
 /*global define */
-/*jslint undef: false */
 define(["vendor/istats/istats"], function (istats) {
 
     var Stats, logEvent, ee;

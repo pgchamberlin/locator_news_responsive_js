@@ -6,12 +6,13 @@
   "expr": true,
   "immed": true,
   "noarg": true,
-  "onevar" true,
-  "quotmark": "double",
+  "onevar": false, // turn back on
   "smarttabs": true,
-  "trailing": true,
-  "undef": true,
-  "unused": true,
+  "trailing": false, // turn back on
+  "undef": false, // turn back on
+  "unused": false, // turn back on
+  "laxbreak": true, // turn off
+  "evil": true, // review use of eval
 
   "node": true
 }

@@ -1,6 +1,4 @@
 /*global define */
-/*jslint undef: false, evil: true */
-
 define([
     'locator/bootstrap',
     'locator/locatorView',

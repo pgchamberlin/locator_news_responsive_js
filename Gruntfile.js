@@ -2,17 +2,20 @@ module.exports = function( grunt ) {
   "use strict";
 
   grunt.initConfig({
-    build: {
-      all: {
-        dest: "dist/locator.js"
+    requirejs: {
+      compile: {
+        options: {
+          baseUrl: "src",
+          mainConfigFile: "build/build.desktop.js",
+          out: "dist/locator.js"
+        }
       }
     },
     jshint: {
       all: {
         src: [
           "src/**/*.js",
-          "Gruntfile.js",
-          "test/**/*.js"
+          "Gruntfile.js"
         ],
         options: {
           jshintrc: true
@@ -48,7 +51,9 @@ module.exports = function( grunt ) {
 
   });
 
-  grunt.registerTask( "dev", [ "build:*:*", "jshint" ] );
+  require( "load-grunt-tasks" )( grunt );
+
+  grunt.registerTask( "dev", [ "jshint" ] );
   grunt.registerTask( "default", [ "dev", "uglify" ] );
 
-}
+};
