@@ -1,0 +1,16 @@
+{
+  "name": "locator-js",
+  "version": "0.1.0",
+  "ignore": [
+    "**/.*",
+    "*.md",
+    "bower.json"
+  ],
+  "dependencies": [
+  ],
+  "devDependencies": {
+    "requirejs": "~2.1.8",
+    "qunit": "~1.12.0",
+    "sinon": "~1.7.3"
+  }
+}
