@@ -1,0 +1,136 @@
+#locator p,
+#locator p#locator-message-search,
+#locator-geolocation a,
+#locator ul li,
+a#locator-results-more,
+#locator form input#locator-search-input {
+    font-size: 1.1em;
+}
+
+p#locator-message-search {
+    padding-bottom: 4px;
+}
+
+#locator a#locator-prompt-change {
+    font-size: 1.2em;
+    position: relative;
+    color: #4A7194;
+}
+
+#locator a#locator-prompt-change:hover {
+    color: #4A7194;
+}
+
+a#locator-results-more {
+    text-decoration: none;
+    color: #4A7194;
+}
+
+#locator ul li a {
+    padding: 2px 0;
+    line-height: 1.25;
+    text-decoration: none;
+    color: #4A7194;
+}
+
+#locator #locator-results {
+    margin: 0;
+    /* Line height required to be 0 to hide empty ul in ie6 & 7 */
+    line-height: 0;
+}
+
+#locator-geolocation span.link-text {
+    font-size: 1.1em;
+}
+
+#locator form button#locator-submit {
+    display: none;
+}
+
+#locator form input.submit {
+    z-index: 1;
+    display: inline-block;
+    position: absolute;
+    right: 10px;
+    width: 20px;
+    height: 19px;
+    margin-top: -10px;
+    border: 0px solid #fff;
+    text-indent: -2500px;
+    line-height: 1.8em;
+    background: url(../img/locator_desktop_sprite.png) no-repeat 0 0;
+    cursor: pointer;
+}
+
+#locator-geolocation span.crosshair {
+    right: 10px;
+    width: 22px;
+    background: url(../img/locator_desktop_sprite.png) no-repeat -120px 0;
+}
+
+#locator-prompt-change span.crosshair {
+    width: 22px;
+    height: 20px;
+    margin-top: -10px;
+    background: url(../img/locator_desktop_sprite.png) no-repeat -80px 0;
+}
+
+#locator #locator-search-container.disabled input.submit {
+    background: url(../img/locator_desktop_sprite.png) no-repeat -40px 0;
+    margin-top: -10px;
+}
+
+#locator-search-container #locator-search-input {
+    padding: 4px 0;
+    font-size: 1.2em;
+    /* border needs to be defined here for IE7 & IE6 */
+    border: 0px #fff;
+}
+
+#locator-search-container #locator-search-input:focus {
+    outline: none;
+}
+
+#locator form {
+    margin-top: 0; 
+}
+
+#locator form span.locator-search-input {
+    display: block;
+    padding: 8px 34px 8px 8px;
+    background: #fff;
+    border: 1px solid #808080;
+}
+
+#locator .locator-search-input input.waiting {
+    /* background position set in in pixels for ie6 compatability */
+    background: transparent url(../img/spinner.gif) no-repeat 560px 4px;
+}
+
+#locator-geolocation {
+    padding: 11px 0;
+}
+
+#locator-autocomplete-results {
+    position: absolute;
+    border: 1px solid #6c6d71;
+    z-index: 999;
+    background: #fff;
+    width: 622px;
+    margin: 8px 0 0 -9px;
+}
+#locator-autocomplete-results li {
+    padding: 0.4em 0.6em !important;
+    cursor: pointer;
+    list-style: none;
+    margin-left: 0 !important;
+    color: #323232;
+    text-decoration: none;
+    font-size: 1.4em;
+    line-height: 1.2;
+}
+#locator-autocomplete-results li.active {
+    background: #0380A5;
+    color: #fff;
+}
+

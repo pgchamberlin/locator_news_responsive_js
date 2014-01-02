@@ -1,0 +1,21 @@
+#locator-prompt-change span.crosshair {
+    top: 16px;
+    background: url(../img/locator_desktop_sprite_ie6.gif) no-repeat -80px 0;
+}
+
+#locator form input.submit {
+    background: url(../img/locator_desktop_sprite_ie6.gif) no-repeat 0 0;
+}
+
+#locator #locator-search-container.disabled input.submit {
+    background: url(../img/locator_desktop_sprite_ie6.gif) no-repeat -40px 0;
+}
+
+#locator #locator-results-more {
+    width: 622px;
+}
+
+.locator-search #locator-search-input {
+    width: 576px;
+}
+
