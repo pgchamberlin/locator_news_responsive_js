@@ -1,10 +1,10 @@
 /*global define */
 define([
-    "jquery",
+    "jquery-1",
     "vendor/events/pubsub"
   ],
-  function(jquery) {
-  
+  function(jquery){
+
     var bootstrap = {
       pubsub: jquery,
       $: jquery,
@@ -12,6 +12,6 @@ define([
     };
 
     return bootstrap;
-  
+
   }
 );

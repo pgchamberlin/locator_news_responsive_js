@@ -28,7 +28,7 @@ module.exports = function( grunt ) {
           paths: {
             "jquery": "empty:",
             "jquery-1": "empty:",
-            "locator/bootstrap": "locator/bootstrap_desktop"
+            "locator/bootstrap": "locator/bootstrap.desktop"
           },
           exclude: [
             "vendor/istats/istats",

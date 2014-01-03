@@ -6,13 +6,15 @@
   "expr": true,
   "immed": true,
   "noarg": true,
-  "onevar": false, // turn back on
+  "onevar": true,
   "smarttabs": true,
-  "trailing": false, // turn back on
+  "trailing": true,
   "undef": false, // turn back on
   "unused": false, // turn back on
-  "laxbreak": true, // turn off
+  "laxbreak": false,
   "evil": true, // review use of eval
+  "indent": 2,
+  "quotmark": "double",
 
   "node": true
 }
