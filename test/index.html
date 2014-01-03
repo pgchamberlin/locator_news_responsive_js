@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>QUnit Tests</title>
+    
+    <link rel="stylesheet" type="text/css" href="libs/qunit/qunit.css">
+
+    <script type="text/javascript">
+        var curl = {
+            baseUrl: "/",
+            paths: {
+                curl: "libs/curl/curl",
+                jquery: "libs/jquery/jquery",
+                locator: "../dist/locator",
+            },
+            apiName: "require",
+            pluginPath: "libs/curl/plugin"
+        };
+    </script>
+    <script src="libs/curl/curl.min.js"></script>
+    <script src="libs/qunit/qunit.js"></script>
+    <script src="libs/sinonjs/sinon-1.4.2.js"></script>
+    <script src="libs/sinonjs/sinon-qunit-1.0.0.js"></script>
+    
+    <script src="unit/main.js"></script>
+    <script src="unit/locatorView.js"></script>
+    <script src="unit/autoCompleteView.js"></script>
+    <script src="unit/stats.js"></script>
+
+</head>
+
+<body>
+
+    <div style="margin: 16px 0;">
+        <h1 id="qunit-header">Locator News Responsive - QUnit Tests</h1>
+        <h2 id="qunit-banner"></h2>
+        <h3 id="qunit-userAgent"></h3>
+        <ol id="qunit-tests"></ol>
+    </div>
+
+    <div id="fixtures">
+        <div id="locator-info"></div>
+        <div id="locator-container"></div>
+        <div id="news-container"></div>
+    </div>
+
+</body>
+</html>
