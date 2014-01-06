@@ -2,19 +2,12 @@
 /*jslint undef: false */
 require([
     'jquery',
+    'module/bootstrap',
     'locator/stats',
-    'locator/bootstrap',
     'locator/locatorView'
-], function($, Stats, bootstrap, LocatorView){
+], function($, bootstrap, Stats, LocatorView){
 
     var ee, view;
-
-    // append result text after suite is finished to make it easier for
-    // cucumber to assert pass/fail
-    QUnit.done(function(details){
-        var result = details.failed === 0 ? 'passed' : 'failed';
-        $('body').append('<div id="test-results">' + result + '</div>');
-    });
 
     module('LocatorView', {
         setup: function(){

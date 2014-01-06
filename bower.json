@@ -3,18 +3,18 @@
   "version": "0.1.0",
   "ignore": [
     "**/.*",
-    "test",
+    "*.json",
     "*.md",
     "Gruntfile.js",
-    "package.json",
-    "bower.json"
+    "test"
   ],
-  "dependencies": [
-  ],
+  "dependencies": {
+  },
   "devDependencies": {
-    "requirejs": "~2.1.8",
     "qunit": "~1.12.0",
-    "sinon": "~1.7.3"
+    "sinonjs": "~1.7.3",
+    "sinon-qunit": "~1.0.0",
+    "jquery-2": "jquery#2.0.3"
   },
   "private": true
 }

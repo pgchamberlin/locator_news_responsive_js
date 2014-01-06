@@ -1,10 +1,9 @@
 /*global require, module, test, expect, ok, equal, deepEqual, EventEmitter, jQuery, QUnit */
 /*jslint undef: false */
 require([
-    'locator/stats',
-    'locator/bootstrap',
+    'module/bootstrap',
     'locator/autoCompleteView'
-], function(Stats, bootstrap, AutoCompleteView){
+], function(bootstrap, AutoCompleteView){
 
     var $, view, inputElement, resultFixtures, htmlFixtures, fixtureErrorFlagpoles;
 
@@ -42,13 +41,6 @@ require([
     };
 
     $ = bootstrap.$;
-
-    // append result text after suite is finished to make it easier for
-    // cucumber to assert pass/fail
-    QUnit.done(function(details){
-        var result = details.failed === 0 ? 'passed' : 'failed';
-        $('body').append('<div id="test-results">' + result + '</div>');
-    });
 
     module('AutoCompleteView', {
         setup: function(){

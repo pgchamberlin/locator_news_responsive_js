@@ -2,10 +2,9 @@
 /*jslint undef: false */
 require([
     'jquery',
-    'locator/bootstrap',
-    'locator/stats',
+    'module/bootstrap',
     'locator/main'
-], function($, bootstrap, Stats, Locator){
+], function($, bootstrap, Locator){
 
     var locator, ee;
 
@@ -34,19 +33,13 @@ require([
             ee.off('locator:open');
             ee.off('locator:close');
             ee.off('locator:geoLocation');
+            ee.off('locator:newsLocalRegions');
             ee.off('locator:submitSearch');
             ee.off('locator:submitLocation');
             ee.off('locator:submitAutoCompleteSearch');
             ee.off('locator:submitAutoCompleteLocation');
 
         }
-    });
-
-    // append result text after suite is finished to make it easier for
-    // cucumber to assert pass/fail
-    QUnit.done(function(details){
-        var result = details.failed === 0 ? 'passed' : 'failed';
-        $('body').append('<div id="test-results">' + result + '</div>');
     });
 
     test('constructor listens to correct events', function(){
@@ -392,10 +385,11 @@ require([
 
         cookie = 'locserv=1#l1#i=2654971:n=Bradworthy:h=e@w1#i=2141:p=Bude@d1#1=sw:2=e:3=e:4=6.11@n1#r=17.11';
         this.stub(locator, 'getCookieString').returns(cookie);
+        locator.getLocation();
 
         var spy = this.spy();
         ee.on('locator:renderForm', spy);
-
+        
         ee.emit('locator:open', ['#locator-container']);
         ok(spy.calledOnce);
     });
@@ -406,6 +400,7 @@ require([
 
         cookie = 'locserv=1#l1#i=2654971:n=Bradworthy:h=e@w1#i=2141:p=Bude@d1#1=sw:2=e:3=e:4=6.11@n1#r=17.11';
         this.stub(locator, 'getCookieString').returns(cookie);
+        locator.getLocation();
 
         spy = this.spy();
         ee.on('locator:newsLocalRegions', spy);

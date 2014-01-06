@@ -4,29 +4,26 @@
     <meta charset="utf-8">
     <title>QUnit Tests</title>
     
-    <link rel="stylesheet" type="text/css" href="libs/qunit/qunit.css">
+    <link rel="stylesheet" type="text/css" href="./libs/qunit/qunit.css">
 
     <script type="text/javascript">
         var curl = {
-            baseUrl: "/",
+            baseUrl: "/src/js",
             paths: {
-                curl: "libs/curl/curl",
-                jquery: "libs/jquery/jquery",
-                locator: "../dist/locator",
+                jquery: "../../test/libs/jquery-2/jquery"
             },
-            apiName: "require",
-            pluginPath: "libs/curl/plugin"
+            apiName: "require"
         };
     </script>
-    <script src="libs/curl/curl.min.js"></script>
-    <script src="libs/qunit/qunit.js"></script>
-    <script src="libs/sinonjs/sinon-1.4.2.js"></script>
-    <script src="libs/sinonjs/sinon-qunit-1.0.0.js"></script>
+    <script src="./libs/curl/curl.js"></script>
+    <script src="./libs/qunit/qunit.js"></script>
+    <script src="./libs/sinon/sinon.js"></script>
+    <script src="./libs/sinon-qunit/sinon-qunit.js"></script>
     
-    <script src="unit/main.js"></script>
-    <script src="unit/locatorView.js"></script>
-    <script src="unit/autoCompleteView.js"></script>
-    <script src="unit/stats.js"></script>
+    <script src="./unit/main.js"></script>
+    <script src="./unit/locatorView.js"></script>
+    <script src="./unit/autoCompleteView.js"></script>
+    <script src="./unit/stats.js"></script>
 
 </head>
 

@@ -1,9 +1,9 @@
 /*global require, module, test, expect, ok, equal, deepEqual, EventEmitter */
 /*jslint undef: false */
 require([
-    'locator/stats',
-    'locator/bootstrap'
-], function(Stats, bootstrap){
+    'module/bootstrap',
+    'locator/stats'
+], function(bootstrap, Stats){
 
     var ee, stats;
 
@@ -14,7 +14,11 @@ require([
         },
 
         teardown: function() {
-            
+
+            if (stats) {
+              stats.logEvent = undefined;
+            }
+
             // Remove events from pubsub
             ee.off('locator:open');
             ee.off('locator:changeLocationPrompt');
@@ -29,11 +33,6 @@ require([
         }
     
     });
-
-    QUnit.done(function(details){
-        var result = details.failed === 0 ? 'passed' : 'failed';
-        $('body').append('<div id="test-results">' + result + '</div>');
-    }); 
 
     test('is a function', function(){
         equal(typeof Stats, 'function', 'Stats is a function');

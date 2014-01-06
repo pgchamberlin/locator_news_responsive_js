@@ -1,6 +1,6 @@
 /*global define */
 define([
-    "locator/bootstrap",
+    "module/bootstrap",
     "locator/locatorView",
     "locator/stats"
   ],

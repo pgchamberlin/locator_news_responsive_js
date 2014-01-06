@@ -5,21 +5,7 @@ define([
   function (istats) {
 
     var Stats,
-        logEvent,
         ee;
-
-    /**
-     * Log a event with iStats
-     *
-     * @return void
-     */
-    logEvent = function(actionType, labels) {
-      labels = labels || {};
-      labels.screen = Stats.isMDot(document.location.hostname) ? "mobile" : "desktop";
-
-      istats.log(actionType, "locator", labels);
-    };
-
 
     /**
      * Stats class
@@ -35,8 +21,20 @@ define([
 
       // inject the logger by passing it as a second parameter
       if (typeof logger === "function") {
-        logEvent = logger;
+        this.logEvent = logger;
       }
+    };
+
+    /**
+     * Log a event with iStats
+     *
+     * @return void
+     */
+    Stats.prototype.logEvent = function(actionType, labels) {
+      labels = labels || {};
+      labels.screen = Stats.isMDot(document.location.hostname) ? "mobile" : "desktop";
+
+      istats.log(actionType, "locator", labels);
     };
 
     /**
@@ -46,9 +44,13 @@ define([
      */
     Stats.prototype.applyEvents = function() {
 
+      var that;
+
+      that = this;
+
       // log browser support for html5 geolocation and cookie usage
       ee.on("locator:open", function(){
-        logEvent("open", {
+        that.logEvent("open", {
           supports_geolocation: (typeof navigator.geolocation !== "undefined") ? 1 : 0,
           has_locserv_cookie: Stats.hasLocation()
         });
@@ -56,12 +58,12 @@ define([
 
       // user has opted to change their location
       ee.on("locator:changeLocationPrompt", function(){
-        logEvent("open");
+        that.logEvent("open");
       });
 
       // when user confirms location using HTML5 geolocation api
       ee.on("locator:geoLocation", function(position){
-        logEvent("geo_location", {
+        that.logEvent("geo_location", {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude
         });
@@ -86,9 +88,9 @@ define([
         };
 
         if (labels.page_num > 1) {
-          logEvent("more_results", labels);
+          that.logEvent("more_results", labels);
         } else {
-          logEvent("search", labels);
+          that.logEvent("search", labels);
         }
       });
 
@@ -98,7 +100,7 @@ define([
         labels = {
           ns_search_term: searchTerm
         };
-        logEvent("autocomplete_search", labels);
+        that.logEvent("autocomplete_search", labels);
       });
 
       // user has clicked on an auto complete result
@@ -108,12 +110,12 @@ define([
           location_id : locationId,
           location_name : locationName
         };
-        logEvent("autocomplete_click", labels);
+        that.logEvent("autocomplete_click", labels);
       });
 
       // when an application error occurs
       ee.on("locator:error", function(){
-        logEvent("http_error");
+        that.logEvent("http_error");
       });
 
       // when the location has changed
@@ -132,7 +134,7 @@ define([
         if (location.local_region) {
           labels.news_region = location.local_region;
         }
-        logEvent("confirm", labels);
+        that.logEvent("confirm", labels);
       });
 
       // when the search results land between more than one news regions
@@ -154,7 +156,7 @@ define([
         }
 
         labels.location_regions = regions.join(", ");
-        logEvent("news_local_regions", labels);
+        that.logEvent("news_local_regions", labels);
       });
     };
 

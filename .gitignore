@@ -1,3 +1,6 @@
+
+/test/libs/**/
+
 /dist
 /bower_components
 /node_modules
