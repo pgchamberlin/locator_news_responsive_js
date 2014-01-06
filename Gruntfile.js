@@ -7,14 +7,11 @@ module.exports = function( grunt ) {
     requirejs: {
       all: {
         options: {
-          baseUrl: "src",
+          baseUrl: "src/js",
           name: "locator/main",
           out: "dist/locator/locator.js",
           paths: {
             "jquery": "empty:",
-            "locator": "js",
-            "vendor/istats/istats": "js/libs/istats/istats",
-            "vendor/events/pubsub": "js/libs/pubsub/pubsub"
           },
           exclude: [
             "vendor/istats/istats",
@@ -25,16 +22,13 @@ module.exports = function( grunt ) {
       },
       desktop: {
         options: {
-          baseUrl: "src",
+          baseUrl: "src/js",
           name: "locator/main",
           out: "dist/locator-desktop/locator.desktop.js",
           paths: {
             "jquery": "empty:",
             "jquery-1": "empty:",
-            "vendor/istats/istats": "js/libs/istats/istats",
-            "vendor/events/pubsub": "js/libs/pubsub/pubsub",
-            "locator": "js",
-            "locator/bootstrap": "js/bootstrap.desktop"
+            "module/bootstrap": "module/bootstrap.desktop"
           },
           include: [
             "locator/autoCompleteView"
@@ -141,6 +135,6 @@ module.exports = function( grunt ) {
 
   grunt.registerTask( "dev", [ "requirejs:*:*", "jshint", "uglify:*:*" ] );
   grunt.registerTask( "test", [ "bower:test", "devserver:test" ] );
-  grunt.registerTask( "default", [ "clean", "bower", "dev" ] );
+  grunt.registerTask( "default", [ "clean", "dev" ] );
 
 };
