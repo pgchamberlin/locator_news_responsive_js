@@ -4,8 +4,15 @@ Locator News Responsive JS
 Locator News Responsive Javascript Bower component.
 
 
-QUnit Tests
------------
+Developing
+----------
+
+To start development make sure node is installed and run:
+
+    npm install
+
+
+### QUnit Tests
 
 To run the unit tests use:
 
@@ -16,8 +23,7 @@ web server, you can view the tests in your browers at the following:
 http://localhost:8080/test
 
 
-Javascript Linting
-------------------
+### Javascript Linting
 
 To lint the javascipt files use:
 
@@ -26,8 +32,7 @@ To lint the javascipt files use:
 This will run jshint with rules defined in the .jshintrc files.
 
 
-Distribution
-------------
+### Distribution
 
 To compile distribution files run:
 
