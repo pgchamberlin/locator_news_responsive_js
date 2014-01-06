@@ -127,7 +127,7 @@ module.exports = function( grunt ) {
       },
       test: {
         options: {
-          port: 8081,
+          port: 8080,
           base: "."
         }
       }
