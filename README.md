@@ -5,7 +5,7 @@ Locator News Responsive Javascript Bower component.
 
 
 QUnit Tests
-===========
+-----------
 
 To run the unit tests use:
 
@@ -17,7 +17,7 @@ http://localhost:8080/test
 
 
 Javascript Linting
-==================
+------------------
 
 To lint the javascipt files use:
 
@@ -27,7 +27,7 @@ This will run jshint with rules defined in the .jshintrc files.
 
 
 Distribution
-============
+------------
 
 To compile distribution files run:
 
