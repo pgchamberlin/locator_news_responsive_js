@@ -308,24 +308,76 @@ require([
     });
 
     test('getLocation() returns an object that is the location from a cookie', function(){
-        var cookie, returnedObject, expectedName, expectedId, expectedNewsId, expectedNewsPath, expectedWeatherId;
+        var cookie, returnedObject, expectedName, expectedId, expectedNation, expectedNewsId, expectedNewsPath, expectedWeatherId;
 
         expectedName = 'Pontypridd';
         expectedId = '6690828';
+        expectedNation = 'wales';
         expectedNewsId = '66';
         expectedNewsPath = 'england/surrey';
         expectedWeatherId = '4172';
 
-        cookie = 'locserv=1#l1#i=6690828:n=Pontypridd:h=e@w1#i=4172:p=Dorking@d1#1=l:2=e:3=e:4=2.41@n1#r=66';
+        cookie = 'locserv=1#l1#i=6690828:n=Pontypridd:h=w@w1#i=4172:p=Dorking@d1#1=l:2=e:3=e:4=2.41@n1#r=66';
         locator.hasParsedCoookie = false;
         this.stub(locator, 'getCookieString').returns(cookie);
         returnedObject = locator.getLocation();
 
         equal(returnedObject.name, expectedName);
         equal(returnedObject.id, expectedId);
+        equal(returnedObject.nation, expectedNation);
         equal(returnedObject.news.id, expectedNewsId);
         equal(returnedObject.news.path, expectedNewsPath);
         equal(returnedObject.weather.id, expectedWeatherId);
+    });
+
+    test('getLocation() returns null nation if nation value is not in nation map', function(){
+        var cookie, returnedObject, expectedNation;
+        expectedNation = null;
+        cookie = 'locserv=1#l1#i=1234:n=Foo:h=invalid';
+        locator.hasParsedCoookie = false;
+        this.stub(locator, 'getCookieString').returns(cookie);
+        returnedObject = locator.getLocation();
+        equal(returnedObject.nation, expectedNation);
+    });
+
+    test('getLocation() returns england nation', function(){
+        var cookie, returnedObject, expectedNation;
+        expectedNation = 'england';
+        cookie = 'locserv=1#l1#i=1234:n=Foo:h=e';
+        locator.hasParsedCoookie = false;
+        this.stub(locator, 'getCookieString').returns(cookie);
+        returnedObject = locator.getLocation();
+        equal(returnedObject.nation, expectedNation);
+    });
+
+    test('getLocation() returns northernireland nation', function(){
+        var cookie, returnedObject, expectedNation;
+        expectedNation = 'northernireland';
+        cookie = 'locserv=1#l1#i=1234:n=Foo:h=n';
+        locator.hasParsedCoookie = false;
+        this.stub(locator, 'getCookieString').returns(cookie);
+        returnedObject = locator.getLocation();
+        equal(returnedObject.nation, expectedNation);
+    });
+
+    test('getLocation() returns scotland nation', function(){
+        var cookie, returnedObject, expectedNation;
+        expectedNation = 'scotland';
+        cookie = 'locserv=1#l1#i=1234:n=Foo:h=s';
+        locator.hasParsedCoookie = false;
+        this.stub(locator, 'getCookieString').returns(cookie);
+        returnedObject = locator.getLocation();
+        equal(returnedObject.nation, expectedNation);
+    });
+
+    test('getLocation() returns wales nation', function(){
+        var cookie, returnedObject, expectedNation;
+        expectedNation = 'wales';
+        cookie = 'locserv=1#l1#i=1234:n=Foo:h=w';
+        locator.hasParsedCoookie = false;
+        this.stub(locator, 'getCookieString').returns(cookie);
+        returnedObject = locator.getLocation();
+        equal(returnedObject.nation, expectedNation);
     });
 
     test('getLocation() handles missing domains', function(){
