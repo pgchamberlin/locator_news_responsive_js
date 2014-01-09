@@ -310,24 +310,26 @@ require([
     test('getLocation() returns an object that is the location from a cookie', function(){
         var cookie, returnedObject, expectedName, expectedId, expectedNation, expectedNewsId, expectedNewsPath, expectedWeatherId;
 
-        expectedName = 'Pontypridd';
-        expectedId = '6690828';
-        expectedNation = 'wales';
-        expectedNewsId = '66';
-        expectedNewsPath = 'england/surrey';
-        expectedWeatherId = '4172';
+        expectedObject = {
+            id: '6690828',
+            name: 'Pontypridd',
+            nation: 'wales',
+            news: {
+                id: '66',
+                path: 'england/surrey'
+            }, 
+            weather: {
+                id: '4172',
+                name: 'Dorking'
+            }
+        };
 
         cookie = 'locserv=1#l1#i=6690828:n=Pontypridd:h=w@w1#i=4172:p=Dorking@d1#1=l:2=e:3=e:4=2.41@n1#r=66';
         locator.hasParsedCoookie = false;
         this.stub(locator, 'getCookieString').returns(cookie);
         returnedObject = locator.getLocation();
 
-        equal(returnedObject.name, expectedName);
-        equal(returnedObject.id, expectedId);
-        equal(returnedObject.nation, expectedNation);
-        equal(returnedObject.news.id, expectedNewsId);
-        equal(returnedObject.news.path, expectedNewsPath);
-        equal(returnedObject.weather.id, expectedWeatherId);
+        deepEqual(returnedObject, expectedObject);
     });
 
     test('getLocation() returns null nation if nation value is not in nation map', function(){
@@ -381,22 +383,22 @@ require([
     });
 
     test('getLocation() handles missing domains', function(){
-        var cookie, returnedObject, expectedName, expectedId, expectedNews, expectedWeather;
+        var cookie, returnedObject, expectedObject;
 
-        expectedName = 'Neverland';
-        expectedId = '1234';
-        expectedNews = null;
-        expectedWeather = null;
+        expectedObject = {
+            id: '1234',
+            name: 'Neverland',
+            nation: 'england',
+            news: null,
+            weather: null
+        };
 
         cookie = 'locserv=1#l1#i=1234:n=Neverland:h=e';
         locator.hasParsedCoookie = false;
         this.stub(locator, 'getCookieString').returns(cookie);
         returnedObject = locator.getLocation();
 
-        equal(returnedObject.name, expectedName);
-        equal(returnedObject.id, expectedId);
-        equal(returnedObject.news, expectedNews);
-        equal(returnedObject.weather, expectedWeather);
+        deepEqual(returnedObject, expectedObject);
     });
 
     test('getNewsRegionChoices() returns an array on objects for multiple choices', function(){
