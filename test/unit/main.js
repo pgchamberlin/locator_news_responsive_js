@@ -470,5 +470,32 @@ require([
     ok(spy.calledOnce);
     ok(spy.calledWith(expectedObject));
   });
+
+  test("locator does not persist location by default", function(){
+    locator = new Locator({pubsub: bootstrap.pubsub});
+    ok(!locator.persistLocation, "Locator not persisting location by default");
+  });
+
+  test("renderChangePrompt is not emitted when not persisting location selection", function () {
+    var stub = sinon.stub(ee, "emit");
+
+    ee = bootstrap.pubsub;
+    locator = new Locator({pubsub: ee, persistLocation: false});
+    ok(!stub.calledWith("locator:renderChangePrompt"), "Change prompt not rendered");
+    stub.restore();
+  });
+
+  test("location selected event emitted when not persisting cookie", function(){
+
+    var stub, loc;
+
+    stub = sinon.stub(ee, "emit");
+    loc = {foo: "bar"};
+    locator = new Locator({pubsub: ee, persistLocation: false});
+    locator.handleLocation(loc);
+
+    ok(stub.calledWith("locator:locationSelected", [loc]), "Location selected emitted with object");
+    stub.restore();
+  });
 });
 

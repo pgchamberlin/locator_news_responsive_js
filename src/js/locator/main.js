@@ -83,6 +83,8 @@ define([
         bootstrap.pubsub = options.pubsub;
       }
 
+      this.persistLocation = options.persistLocation || false;
+
       stats = new Stats(bootstrap.pubsub);
       stats.applyEvents();
 
@@ -94,7 +96,7 @@ define([
             enableAutoComplete: options.enableAutoComplete !== false
           });
 
-          if (that.location) {
+          if (that.location && options.persistLocation === true) {
             bootstrap.pubsub.emit("locator:renderChangePrompt");
           } else {
             bootstrap.pubsub.emit("locator:renderForm");
@@ -107,6 +109,10 @@ define([
               regions: newsRegions
             }]);
           }
+
+          bootstrap.pubsub.on("locator:locationSelected", function() {
+            view.resetForm();
+          });
         }
       });
 
@@ -170,7 +176,7 @@ define([
      */
     Locator.prototype.handleLocation = function(location) {
       var cookieString;
-      if (location.cookie && location.expires) {
+      if (location.cookie && location.expires && this.persistLocation === true) {
         cookieString = "locserv=" + location.cookie +
                        "; expires=" + (new Date(location.expires*1000)).toUTCString() +
                        "; path=/; domain=.bbc.co.uk";
@@ -178,8 +184,12 @@ define([
         this.hasParsedCoookie = false;
       }
 
-      bootstrap.pubsub.emit("locator:renderChangePrompt");
-      bootstrap.pubsub.emit("locator:locationChanged", [this.getLocation()]);
+      if (this.persistLocation === true) {
+        bootstrap.pubsub.emit("locator:renderChangePrompt");
+        bootstrap.pubsub.emit("locator:locationChanged", [this.getLocation()]);
+      } else {
+        bootstrap.pubsub.emit("locator:locationSelected", [location]);
+      }
     };
 
 
