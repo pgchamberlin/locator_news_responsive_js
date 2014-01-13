@@ -307,4 +307,17 @@ require([
     stub.restore();
   });
 
+  test("stats are logged when there are no search results", function(){
+    var spy, stats, expectedType, expectedLabels;
+
+    spy = sinon.spy();
+    stats = new Stats(bootstrap.pubsub, spy);
+    stats.applyEvents();
+    expectedType = "no_search_results";
+    expectedLabels = { ns_search_term: "pontypridd" };
+
+    ee.emit("locator:searchResults", [{total: 0, searchTerm: "pontypridd"}]);
+
+    ok(spy.calledWith(expectedType, expectedLabels), "No search results logged");
+  });
 });

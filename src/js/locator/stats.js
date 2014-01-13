@@ -73,6 +73,11 @@ define([
       ee.on("locator:searchResults", function(r){
         var labels;
 
+        if (r.total === 0) {
+          that.logEvent("no_search_results", { ns_search_term: r.searchTerm });
+          return;
+        }
+
         if (typeof r.offset === "undefined") {
           r.offset = 0;
         }
