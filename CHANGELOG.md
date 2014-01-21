@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.3.0 (21 January 2014)
+- Component can now be used as a standalone search component
+
 ## 0.2.0 (9 January 2014)
 - Location object now contains a nation property ([PR #1](https://github.com/BBC-Location-Services/locator_news_responsive_js/pull/1))
 
