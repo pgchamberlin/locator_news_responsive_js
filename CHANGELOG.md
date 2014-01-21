@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.4.0 (21 January 2014)
+- Added stats for search requests that yield no results
+
 ## 0.3.0 (21 January 2014)
 - Component can now be used as a standalone search component
 
