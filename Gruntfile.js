@@ -45,12 +45,14 @@ module.exports = function( grunt ) {
       all: {
         src: [
           "src/**/*.js",
+          "test/**/*.js",
           "Gruntfile.js"
         ],
         options: {
           jshintrc: true,
           ignores: [
-            "src/js/vendor/**/*.js"
+            "src/js/vendor/**/*.js",
+            "test/libs/**/*.js"
           ]
         }
       }
