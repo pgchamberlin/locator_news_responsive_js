@@ -288,7 +288,7 @@ define([
             }
           });
 
-          bootstrap.pubsub.on("locator:newsLocalRegions", function(){
+          bootstrap.pubsub.on("locator:newsLocalRegions", function() {
             if (confirmLocationSelection) {
               view.setMoreResultsDisplay("none");
             }
@@ -427,8 +427,9 @@ define([
      * @return void
      */
     Locator.prototype.persistUserLocation = function(locationId, newsRegionId) {
-
-      var cookieString, url, self;
+      var cookieString;
+      var url;
+      var self;
 
       // do not persist location if chosen not to in options
       if (this.persistLocation === false) {
@@ -443,7 +444,7 @@ define([
         location = location || {};
         if (location.type === "location" && location.cookie && location.expires) {
           cookieString = "locserv=" + location.cookie +
-            "; expires=" + (new Date(location.expires*1000)).toUTCString() +
+            "; expires=" + (new Date(location.expires * 1000)).toUTCString() +
             "; path=/; domain=.bbc.co.uk";
           self.setCookieString(cookieString);
           self.hasParsedCoookie = false;

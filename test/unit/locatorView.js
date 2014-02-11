@@ -638,7 +638,7 @@ require([
   });
 
   /* More Results */
-  test('setMoreResultsDisplay() is a proxy to the elements style', function() {
+  test("setMoreResultsDisplay() is a proxy to the elements style", function() {
     view.setMoreResultsDisplay("");
     equal(view.moreResults.style.display, "", "More results display style has been set to ''");
   });

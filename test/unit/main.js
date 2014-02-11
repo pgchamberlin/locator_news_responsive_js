@@ -556,7 +556,7 @@ require([
     spy.restore();
   });
 
-  test("More results is hidden when on news region disambiguation page and confirmLocationSelection is true", function (){
+  test("More results is hidden when on news region disambiguation page and confirmLocationSelection is true", function() {
     var response;
     var moreResults;
 
@@ -599,7 +599,7 @@ require([
     spy = sinon.spy(locator, "setCookieString");
     locator.persistUserLocation(2654971, "devon");
 
-    this.requests[0].respond(200, {"Content-Type": "application/json" }, JSON.stringify(location));
+    this.requests[0].respond(200, { "Content-Type": "application/json" }, JSON.stringify(location));
     ok(spy.calledOnce, "locserv cookie set");
   });
 
