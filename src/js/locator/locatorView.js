@@ -160,7 +160,10 @@ define([
         target.blur();
 
         url = target.href;
-        
+
+        bootstrap.$("li", this).removeClass("selected");
+        bootstrap.$(target).parent("li").addClass("selected");
+
         if (url && 0 < url.length) {
           matches = url.match(/confirm\/(\w{0,2}\d+)\/?(\w+)?/);
           if (3 === matches.length) {
@@ -322,7 +325,7 @@ define([
         this.setMessage(this.geolocationMessage, null);
         this.currentResults = null;
         this.results.innerHTML = "";
-        this.moreResults.style.display = "none";
+        this.setMoreResultsDisplay("none");
       },
 
 
@@ -544,6 +547,15 @@ define([
         }
       },
 
+      /**
+       * Toggle the visibility of the more results button.
+       *
+       * @param {String} display
+       */
+      setMoreResultsDisplay: function(display) {
+        display = display || "";
+        this.moreResults.style.display = display;
+      },
 
       /**
        * Render search results.
@@ -591,7 +603,7 @@ define([
           displayMoreResults = data.offset + data.limit < data.total;
         }
 
-        this.moreResults.style.display = displayMoreResults ? "block" : "none";
+        this.setMoreResultsDisplay(displayMoreResults ? "block" : "none");
 
         if (displayMoreResults) {
           this.enableMoreResults();

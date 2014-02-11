@@ -71,7 +71,8 @@ define([
       var that,
           view,
           state,
-          stats;
+          stats,
+          confirmLocationSelection;
 
       that = this;
       state = false;
@@ -84,6 +85,8 @@ define([
       }
 
       this.persistLocation = options.persistLocation || false;
+
+      this.confirmLocationSelection = confirmLocationSelection = !!options.confirmLocationSelection;
 
       stats = new Stats(bootstrap.pubsub);
       stats.applyEvents();
@@ -110,8 +113,16 @@ define([
             }]);
           }
 
-          bootstrap.pubsub.on("locator:locationSelected", function() {
-            view.resetForm();
+          bootstrap.pubsub.on("locator:locationSelected", function(location) {
+            if (!confirmLocationSelection) {
+              view.resetForm();
+            }
+          });
+
+          bootstrap.pubsub.on("locator:newsLocalRegions", function(){
+            if (confirmLocationSelection) {
+              view.setMoreResultsDisplay("none");
+            }
           });
         }
       });
@@ -202,7 +213,11 @@ define([
      * @return void
      */
     Locator.prototype.checkLocation = function(locationId, newsRegionId) {
-      bootstrap.pubsub.emit("locator:renderWait");
+
+      if (!this.confirmLocationSelection) {
+        bootstrap.pubsub.emit("locator:renderWait");
+      }
+
       var that = this,
           url =  this.host + "/locator/news/responsive/location.json?id=" + locationId;
       
