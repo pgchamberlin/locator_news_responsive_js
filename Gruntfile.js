@@ -60,9 +60,9 @@ module.exports = function( grunt ) {
     jscs: {
       main: [
         "src/js/**/*.js",
-        "!src/js/vendor/**/*"
-        //"test/**/*.js",
-        //"!test/libs/**/*.js"
+        "!src/js/vendor/**/*",
+        "test/**/*.js",
+        "!test/libs/**/*.js"
       ],
       options: {
         config: ".jscs.json",
