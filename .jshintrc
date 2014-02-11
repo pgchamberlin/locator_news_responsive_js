@@ -20,6 +20,7 @@
   "quotmark": "double",
   "node": true,
   "browser": true,
+  "es3": true,
   "globals": {
     "define": true,
     "sinon": true,
