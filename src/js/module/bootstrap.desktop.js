@@ -2,12 +2,12 @@ define([
     "jquery-1",
     "vendor/events/pubsub"
   ],
-  function(jquery){
+  function(jquery) {
 
     var bootstrap = {
-      pubsub: jquery,
-      $: jquery,
-      ajax: jquery.ajax
+      pubsub : jquery,
+      $      : jquery,
+      ajax   : jquery.ajax
     };
 
     return bootstrap;

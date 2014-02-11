@@ -57,6 +57,17 @@ module.exports = function( grunt ) {
         }
       }
     },
+    jscs: {
+      main: [
+        "src/js/**/*.js",
+        "!src/js/vendor/**/*"
+        //"test/**/*.js",
+        //"!test/libs/**/*.js"
+      ],
+      options: {
+        config: ".jscs.json",
+      }
+    },
     uglify: {
       all: {
         files: {
@@ -136,6 +147,7 @@ module.exports = function( grunt ) {
   grunt.registerTask( "bower", [ "bowercopy" ] );
 
   grunt.registerTask( "dev", [ "requirejs:*:*", "jshint", "uglify:*:*" ] );
+  grunt.registerTask( "check", [ "jshint", "jscs" ] );
   grunt.registerTask( "test", [ "bower:test", "devserver:test" ] );
   grunt.registerTask( "default", [ "clean", "dev" ] );
 

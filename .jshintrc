@@ -5,11 +5,14 @@
   "eqnull": true,
   "expr": true,
   "immed": true,
+  "latedef": true,
   "noarg": true,
-  "onevar": true,
   "smarttabs": true,
+  "sub": true,
+  "multistr": true,
+  "newcap": true,
   "trailing": true,
-  "undef": true, // turn back on
+  "undef": true,
   "unused": false, // turn back on
   "laxbreak": false,
   "evil": true, // review use of eval
