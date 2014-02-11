@@ -1,4 +1,4 @@
-/*global require, module, test, expect, ok, equal, deepEqual, EventEmitter, jQuery, Qunit, sinon */
+/*global require, module, document, test, expect, ok, equal, deepEqual, EventEmitter, jQuery, Qunit, sinon */
 /*jslint undef: false */
 require([
   "jquery",
@@ -496,6 +496,47 @@ require([
 
     ok(stub.calledWith("locator:locationSelected", [loc]), "Location selected emitted with object");
     stub.restore();
+  });
+
+  test("confirmLocationSelection is false by default", function() {
+    ok(!locator.confirmLocationSelection, "confirmLocationSelection is false by default");
+  });
+
+  test("locator:renderWait is not emitted when confirmLocationSelection is true", function(){
+
+    var spy = sinon.spy(ee, "emit");
+    locator = new Locator({confirmLocationSelection: true});
+    locator.checkLocation();
+    ok(!spy.calledWith("locator:renderWait"), "renderWait is not emitted when confirmLocationSelection is true");
+    spy.restore();
+  });
+
+  test("More results is hidden when on news region disambiguation page and confirmLocationSelection is true", function(){
+    var response, moreResults;
+
+    response = {
+      "type": "news_regions",
+      "location": {
+        "id": "2654971",
+        "name": "Bradworthy"
+      },
+      "regions": [
+        {
+          "id": "devon",
+          "name": "Devon"
+        },
+        {
+          "id": "cornwall",
+          "name": "Cornwall"
+        }
+      ]
+    };
+    locator = new Locator({confirmLocationSelection: true, pubsub: ee});
+    locator.open("#locator-container");
+    ee.emit("locator:newsLocalRegions", [response]);
+
+    moreResults = document.getElementById("locator-results-more");
+    equal(moreResults.style.display, "none", "More results is hidden");
   });
 });
 

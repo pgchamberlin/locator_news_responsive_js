@@ -646,6 +646,11 @@ require([
 
   /* More Results */
 
+  test('setMoreResultsDisplay() is a proxy to the elements style', function(){
+    view.setMoreResultsDisplay("");
+    equal(view.moreResults.style.display, "", "More results display style has been set to ''");
+  });
+
   test("enableMoreResults() sets moreResultsEnabled to true", function () {
     view.moreResultsEnabled = false;
     view.enableMoreResults();
