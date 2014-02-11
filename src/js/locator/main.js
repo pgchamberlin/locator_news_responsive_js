@@ -186,16 +186,11 @@ define([
      * @return void
      */
     Locator.prototype.handleLocation = function(location) {
-      var cookieString;
-      if (location.cookie && location.expires && this.persistLocation === true) {
-        cookieString = "locserv=" + location.cookie +
-                       "; expires=" + (new Date(location.expires*1000)).toUTCString() +
-                       "; path=/; domain=.bbc.co.uk";
-        this.setCookieString(cookieString);
-        this.hasParsedCoookie = false;
-      }
+
+      this.locationSelection = location;
 
       if (this.persistLocation === true) {
+        this.persistUserLocation(location);
         bootstrap.pubsub.emit("locator:renderChangePrompt");
         bootstrap.pubsub.emit("locator:locationChanged", [this.getLocation()]);
       } else {
@@ -256,6 +251,75 @@ define([
       }
     };
 
+    /**
+     * Persist a location for the user by setting the locserv cookie. This
+     * method can also be called with no arguments and it will set the users
+     * location to the one cached when locator:locationSelected was emitted e.g.
+     * locator.persistUserLocation();
+     *
+     * @param {String|Number|Object} locationId this can either be a location id
+     * in the form of a string or number, or be the location object emitted by
+     * locator:locationSelected event
+     * @param {String} newsRegionId
+     * @return void
+     */
+    Locator.prototype.persistUserLocation = function(locationId, newsRegionId) {
+
+      var cookieString, url, self;
+
+      // do not persist location if chosen not to in options
+      if (this.persistLocation === false) {
+        return;
+      }
+
+      self = this;
+
+      // persist the location to the locserv cookie
+      // @param {Object} location the location object
+      function persistLocation(location) {
+        location = location || {};
+        if (location.type === "location" && location.cookie && location.expires) {
+          cookieString = "locserv=" + location.cookie +
+            "; expires=" + (new Date(location.expires*1000)).toUTCString() +
+            "; path=/; domain=.bbc.co.uk";
+          self.setCookieString(cookieString);
+          self.hasParsedCoookie = false;
+        }
+      }
+
+      // if arguments are empty and the locationSelection has been cached, or
+      // if locationId is an object and is the same as the cached location
+      // set the cookie using the cached location (this.selectedLocation)
+      if ((!locationId && !newsRegionId && (typeof this.locationSelection === "object")) ||
+        (typeof locationId === "object" && locationId === this.locationSelection)
+      ) {
+        persistLocation(this.locationSelection);
+        return;
+      }
+
+      // if values have been set for locationId and newsRegionId the we need to
+      // make a request
+      if (locationId && newsRegionId) {
+        locationId = (locationId).toString(); // cast to a string as it may be a Number
+        // check if there is a cached location and it looks the same as the one
+        // passed in by the arguments
+        if (this.locationSelection && (this.locationSelection.id === locationId) &&
+          (this.locationSelection.news.id === newsRegionId)
+        ) {
+          persistLocation(this.locationSelection);
+          return;
+        }
+
+        url  = this.host + "/locator/news/responsive/location.json?id=" + locationId;
+        url += "&newsRegion=" + newsRegionId;
+        doRequest(url, persistLocation, "location");
+        return;
+      }
+
+      if (typeof locationId === "object") {
+        persistLocation(locationId);
+      }
+    };
 
     /**
      * Search for a location and return the news region, geoname id and cookie
