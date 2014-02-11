@@ -323,6 +323,16 @@ define([
     };
 
     /**
+     * Render the change location prompt
+     *
+     * @return void
+     */
+    LocatorView.prototype.renderChangePrompt = function() {
+      this.setFormIsShown(false);
+      this.setChangePromptIsShown(true);
+    };
+
+    /**
      * Render the form to its initial state
      *
      * @return void
