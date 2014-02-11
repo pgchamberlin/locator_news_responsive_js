@@ -1,38 +1,37 @@
-/*global require, module, document, test, expect, ok, equal, deepEqual, EventEmitter, jQuery, Qunit, sinon */
-/*jslint undef: false */
 require([
   "jquery",
   "module/bootstrap",
   "locator/main"
-], function ($, bootstrap, Locator) {
+], function($, bootstrap, Locator) {
 
-  var locator, ee, location;
+  var locator;
+  var ee;
+  var location;
 
   location = {
-    "type": "location",
-    "id": "2654971",
-    "name": "Bradworthy",
-
-    "news": {
-      "id": "devon",
-      "name": "Devon"
+    type    : "location",
+    id      : "2654971",
+    name    : "Bradworthy",
+    news    : {
+      id   : "devon",
+      name : "Devon"
     },
-    "cookie": "1#l1#i=2654971:n=Bradworthy:h=e@w1#i=2141:p=Bude@d1#1=sw:2=e:3=e:4=6.11@n1#r=17",
-    "expires": "1423662577"
+    cookie  : "1#l1#i=2654971:n=Bradworthy:h=e@w1#i=2141:p=Bude@d1#1=sw:2=e:3=e:4=6.11@n1#r=17",
+    expires : "1423662577"
   };
 
   module("Locator (main.js)", {
-    setup: function () {
+    setup    : function() {
       var requests;
       this.requests = requests = [];
       this.xhr = sinon.useFakeXMLHttpRequest();
-      this.xhr.onCreate = function (xhr) {
+      this.xhr.onCreate = function(xhr) {
         requests.push(xhr);
       };
       ee = bootstrap.pubsub;
-      locator = new Locator({pubsub: ee, persistLocation: true});
+      locator = new Locator({ pubsub: ee, persistLocation: true });
     },
-    teardown: function () {
+    teardown : function() {
       this.xhr.restore();
       $("div#locator-info").remove();
       $("div#locator-container").remove();
@@ -51,16 +50,15 @@ require([
       ee.off("locator:submitLocation");
       ee.off("locator:submitAutoCompleteSearch");
       ee.off("locator:submitAutoCompleteLocation");
-
     }
   });
 
-  test("constructor listens to correct events", function () {
+  test("constructor listens to correct events", function() {
     var locator;
 
     this.stub(ee, "on");
 
-    locator = new Locator({pubsub: ee});
+    locator = new Locator({ pubsub: ee });
 
     ok(ee.on.calledWith("locator:open"), "listener for locator:open is attached");
     ok(ee.on.calledWith("locator:close"), "listener for locator:close is attached");
@@ -68,13 +66,13 @@ require([
     ee.on.restore();
   });
 
-  test("locator:geoLocation is bound to geoLocate()", function () {
+  test("locator:geoLocation is bound to geoLocate()", function() {
     var expectedPosition;
 
     expectedPosition = {
-      coords: {
-        latitude: 10,
-        longitude: -20
+      coords : {
+        latitude  : 10,
+        longitude : -20
       }
     };
 
@@ -90,8 +88,9 @@ require([
     );
   });
 
-  test("locator:submitSearch is bound to search()", function () {
-    var expectedSearchTerm, expectedOffset;
+  test("locator:submitSearch is bound to search()", function() {
+    var expectedSearchTerm;
+    var expectedOffset;
 
     expectedSearchTerm = "foo";
     expectedOffset = 99;
@@ -105,8 +104,9 @@ require([
     );
   });
 
-  test("locator:submitLocation is bound to checkLocation()", function () {
-    var expectedLocationId, expectedNewsRegion;
+  test("locator:submitLocation is bound to checkLocation()", function() {
+    var expectedLocationId;
+    var expectedNewsRegion;
 
     expectedLocationId = 12349876;
     expectedNewsRegion = "neverland";
@@ -120,7 +120,7 @@ require([
     );
   });
 
-  test("locator:submitAutoCompleteSearch is bound to autoComplete()", function () {
+  test("locator:submitAutoCompleteSearch is bound to autoComplete()", function() {
     var expectedSearchTerm;
 
     expectedSearchTerm = "foo";
@@ -134,8 +134,10 @@ require([
     );
   });
 
-  test("locator:submitAutoCompleteLocation is bound to checkLocation()", function () {
-    var expectedLocationId, expectedLocationName, expectedNewsRegion;
+  test("locator:submitAutoCompleteLocation is bound to checkLocation()", function() {
+    var expectedLocationId;
+    var expectedLocationName;
+    var expectedNewsRegion;
 
     expectedLocationId = 666;
     expectedLocationName = "neverland";
@@ -150,7 +152,7 @@ require([
     );
   });
 
-  test("open() emits open event", function () {
+  test("open() emits open event", function() {
     this.stub(ee, "emit");
     locator.open("#locator-container");
     ok(ee.emit.calledOnce, "EventEmitter called on open");
@@ -159,15 +161,16 @@ require([
     ee.emit.restore();
   });
 
-  test("we can specify custom host in constructor options", function () {
-    var locator, expectedValue;
+  test("we can specify custom host in constructor options", function() {
+    var locator;
+    var expectedValue;
 
     expectedValue = "foobar";
-    locator = new Locator({host: expectedValue});
+    locator = new Locator({ host: expectedValue });
     equal(locator.host, expectedValue, "Host was set correctly");
   });
 
-  test("close() emits an event", function () {
+  test("close() emits an event", function() {
     this.stub(ee, "emit");
     locator.close();
     ok(ee.emit.calledOnce, "EventEmitter called on close");
@@ -176,7 +179,7 @@ require([
     ee.emit.restore();
   });
 
-  test("handleLocation() emits events and sets location cookie", function () {
+  test("handleLocation() emits events and sets location cookie", function() {
     var data;
 
     this.stub(ee, "emit");
@@ -185,9 +188,9 @@ require([
 
     // mock data
     data = {
-      cookie: "1#l1#i=6690828:n=Stoke+d%27Abernon:h=e@w1#i=4172:p=Dorking@d1#1=l:2=e:3=e:4=2.41@n1#r=66",
-      expires: "1380098448",
-      type: "location"
+      cookie  : "1#l1#i=6690828:n=Stoke+d%27Abernon:h=e@w1#i=4172:p=Dorking@d1#1=l:2=e:3=e:4=2.41@n1#r=66",
+      expires : "1380098448",
+      type    : "location"
     };
 
     locator.hasParsedCoookie = true;
@@ -204,9 +207,10 @@ require([
     ee.emit.restore();
   });
 
-
-  test("checkLocation() calls the correct url", function () {
-    var expectedUrl, expectedLocationId, expectedNewsRegionId;
+  test("checkLocation() calls the correct url", function() {
+    var expectedUrl;
+    var expectedLocationId;
+    var expectedNewsRegionId;
 
     expectedLocationId = 1234;
     expectedNewsRegionId = 5678;
@@ -217,13 +221,13 @@ require([
     equal(this.requests[0].url, expectedUrl, "The correct url was requested");
   });
 
-  test("handleResponse() emits correct events based on response object", function () {
+  test("handleResponse() emits correct events based on response object", function() {
     var response;
 
     this.stub(locator, "handleLocation");
     this.stub(ee, "emit");
 
-    response = {type: "search_results"};
+    response = { type: "search_results" };
     locator.handleResponse(response);
     ok(ee.emit.calledOnce, "Event fired for search_results");
     ok(ee.emit.calledWith("locator:searchResults", [response]), "with 2 arguments");
@@ -245,8 +249,9 @@ require([
     ok(locator.handleLocation.calledWith(response), "handleLocation() was called with expected response");
   });
 
-  test("search() makes expected request", function () {
-    var expectedUrl, expectedSearchTerm;
+  test("search() makes expected request", function() {
+    var expectedUrl;
+    var expectedSearchTerm;
 
     expectedSearchTerm = "Foo";
     expectedUrl = "/locator/news/responsive/search.json?search=" + expectedSearchTerm;
@@ -255,8 +260,10 @@ require([
     equal(this.requests[0].url, expectedUrl, "The correct URL was requested");
   });
 
-  test("search() makes expected request with expected offset", function () {
-    var expectedSearchTerm, expectedOffset, expectedUrl;
+  test("search() makes expected request with expected offset", function() {
+    var expectedSearchTerm;
+    var expectedOffset;
+    var expectedUrl;
 
     expectedSearchTerm = "Foo";
     expectedOffset = 10;
@@ -268,12 +275,12 @@ require([
     equal(this.requests[0].url, expectedUrl, "The correct URL was requested");
   });
 
-  test("search() emits renderWait", function () {
+  test("search() emits renderWait", function() {
     var locator;
 
     this.stub(ee, "emit");
 
-    locator = new Locator({pubsub: ee});
+    locator = new Locator({ pubsub: ee });
     locator.search("Foo", 0);
 
     ok(ee.emit.called, "event emitter fired");
@@ -282,8 +289,10 @@ require([
     ee.emit.restore();
   });
 
-  test("geoLocate() constructs correct url", function () {
-    var expectedUrl, expectedLatitude, expectedLongitude;
+  test("geoLocate() constructs correct url", function() {
+    var expectedUrl;
+    var expectedLatitude;
+    var expectedLongitude;
 
     expectedLatitude = 1234;
     expectedLongitude = 5678;
@@ -299,8 +308,10 @@ require([
     ee.emit.restore();
   });
 
-  test("geoLocate() rounds coordinate precision to 3 decimal places", function () {
-    var expectedUrl, expectedLatitude, expectedLongitude;
+  test("geoLocate() rounds coordinate precision to 3 decimal places", function() {
+    var expectedUrl;
+    var expectedLatitude;
+    var expectedLongitude;
 
     expectedLatitude = "12.413";
     expectedLongitude = "-3.468";
@@ -310,31 +321,33 @@ require([
     equal(this.requests[0].url, expectedUrl, "The correct url was requested with normalised coordinates");
   });
 
-  test("getCookieString() does return a string", function () {
+  test("getCookieString() does return a string", function() {
     equal(typeof locator.getCookieString(), "string");
   });
 
-  test("getLocation() returns null when locserv not present", function () {
+  test("getLocation() returns null when locserv not present", function() {
     expect(1);
     locator.hasParsedCoookie = false;
     this.stub(locator, "getCookieString").returns("foo");
     equal(locator.getLocation(), null);
   });
 
-  test("getLocation() returns an object that is the location from a cookie", function () {
-    var cookie, returnedObject, expectedObject;
+  test("getLocation() returns an object that is the location from a cookie", function() {
+    var cookie;
+    var returnedObject;
+    var expectedObject;
 
     expectedObject = {
-      id: "6690828",
-      name: "Pontypridd",
-      nation: "wales",
-      news: {
-        id: "66",
-        path: "england/surrey"
+      id      : "6690828",
+      name    : "Pontypridd",
+      nation  : "wales",
+      news    : {
+        id   : "66",
+        path : "england/surrey"
       },
-      weather: {
-        id: "4172",
-        name: "Dorking"
+      weather : {
+        id   : "4172",
+        name : "Dorking"
       }
     };
 
@@ -346,8 +359,11 @@ require([
     deepEqual(returnedObject, expectedObject);
   });
 
-  test("getLocation() returns null nation if nation value is not in nation map", function () {
-    var cookie, returnedObject, expectedNation;
+  test("getLocation() returns null nation if nation value is not in nation map", function() {
+    var cookie;
+    var returnedObject;
+    var expectedNation;
+    
     expectedNation = null;
     cookie = "locserv=1#l1#i=1234:n=Foo:h=invalid";
     locator.hasParsedCoookie = false;
@@ -356,8 +372,11 @@ require([
     equal(returnedObject.nation, expectedNation);
   });
 
-  test("getLocation() returns england nation", function () {
-    var cookie, returnedObject, expectedNation;
+  test("getLocation() returns england nation", function() {
+    var cookie;
+    var returnedObject;
+    var expectedNation;
+    
     expectedNation = "england";
     cookie = "locserv=1#l1#i=1234:n=Foo:h=e";
     locator.hasParsedCoookie = false;
@@ -366,8 +385,11 @@ require([
     equal(returnedObject.nation, expectedNation);
   });
 
-  test("getLocation() returns northernireland nation", function () {
-    var cookie, returnedObject, expectedNation;
+  test("getLocation() returns northernireland nation", function() {
+    var cookie;
+    var returnedObject;
+    var expectedNation;
+    
     expectedNation = "northernireland";
     cookie = "locserv=1#l1#i=1234:n=Foo:h=n";
     locator.hasParsedCoookie = false;
@@ -376,8 +398,11 @@ require([
     equal(returnedObject.nation, expectedNation);
   });
 
-  test("getLocation() returns scotland nation", function () {
-    var cookie, returnedObject, expectedNation;
+  test("getLocation() returns scotland nation", function() {
+    var cookie;
+    var returnedObject;
+    var expectedNation;
+
     expectedNation = "scotland";
     cookie = "locserv=1#l1#i=1234:n=Foo:h=s";
     locator.hasParsedCoookie = false;
@@ -386,8 +411,11 @@ require([
     equal(returnedObject.nation, expectedNation);
   });
 
-  test("getLocation() returns wales nation", function () {
-    var cookie, returnedObject, expectedNation;
+  test("getLocation() returns wales nation", function() {
+    var cookie;
+    var returnedObject;
+    var expectedNation;
+    
     expectedNation = "wales";
     cookie = "locserv=1#l1#i=1234:n=Foo:h=w";
     locator.hasParsedCoookie = false;
@@ -396,15 +424,17 @@ require([
     equal(returnedObject.nation, expectedNation);
   });
 
-  test("getLocation() handles missing domains", function () {
-    var cookie, returnedObject, expectedObject;
+  test("getLocation() handles missing domains", function() {
+    var cookie;
+    var returnedObject;
+    var expectedObject;
 
     expectedObject = {
-      id: "1234",
-      name: "Neverland",
-      nation: "england",
-      news: null,
-      weather: null
+      id      : "1234",
+      name    : "Neverland",
+      nation  : "england",
+      news    : null,
+      weather : null
     };
 
     cookie = "locserv=1#l1#i=1234:n=Neverland:h=e";
@@ -415,9 +445,9 @@ require([
     deepEqual(returnedObject, expectedObject);
   });
 
-  test("getNewsRegionChoices() returns an array on objects for multiple choices", function () {
-
-    var cookie, newsRegions;
+  test("getNewsRegionChoices() returns an array on objects for multiple choices", function() {
+    var cookie;
+    var newsRegions;
 
     cookie = "locserv=1#l1#i=2654971:n=Bradworthy:h=e@w1#i=2141:p=Bude@d1#1=sw:2=e:3=e:4=6.11@n1#r=17.11";
     this.stub(locator, "getCookieString").returns(cookie);
@@ -434,9 +464,9 @@ require([
     equal(newsRegions[1].name, "Cornwall", "Seconds news region name is Cornwall");
   });
 
-  test("getNewsRegionChoices() returns an array on objects for single choices", function () {
-
-    var cookie, newsRegions;
+  test("getNewsRegionChoices() returns an array on objects for single choices", function() {
+    var cookie;
+    var newsRegions;
 
     cookie = "locserv=1#l1#i=2654971:n=Bradworthy:h=e@w1#i=2141:p=Bude@d1#1=sw:2=e:3=e:4=6.11@n1#r=17";
     this.stub(locator, "getCookieString").returns(cookie);
@@ -447,9 +477,9 @@ require([
     equal(newsRegions[0].name, "Devon", "First news region name is Devon");
   });
 
-  test("locator:renderForm emitted when user has multiple news regions selected", function () {
-
-    var cookie, spy;
+  test("locator:renderForm emitted when user has multiple news regions selected", function() {
+    var cookie;
+    var spy;
 
     cookie = "locserv=1#l1#i=2654971:n=Bradworthy:h=e@w1#i=2141:p=Bude@d1#1=sw:2=e:3=e:4=6.11@n1#r=17.11";
     this.stub(locator, "getCookieString").returns(cookie);
@@ -462,9 +492,10 @@ require([
     ok(spy.calledOnce);
   });
 
-  test("locator:newsLocalRegions event is emitted when multiple news regions selected", function () {
-
-    var cookie, spy, expectedObject;
+  test("locator:newsLocalRegions event is emitted when multiple news regions selected", function() {
+    var cookie;
+    var spy;
+    var expectedObject;
 
     cookie = "locserv=1#l1#i=2654971:n=Bradworthy:h=e@w1#i=2141:p=Bude@d1#1=sw:2=e:3=e:4=6.11@n1#r=17.11";
     this.stub(locator, "getCookieString").returns(cookie);
@@ -475,37 +506,37 @@ require([
     ee.emit("locator:open", ["#locator-container"]);
 
     expectedObject = {
-      location: {
-        id: locator.location.id
+      location : {
+        id : locator.location.id
       },
-      regions: locator.getNewsRegionChoices()
+      regions  : locator.getNewsRegionChoices()
     };
 
     ok(spy.calledOnce);
     ok(spy.calledWith(expectedObject));
   });
 
-  test("locator does not persist location by default", function(){
-    locator = new Locator({pubsub: bootstrap.pubsub});
+  test("locator does not persist location by default", function() {
+    locator = new Locator({ pubsub: bootstrap.pubsub });
     ok(!locator.persistLocation, "Locator not persisting location by default");
   });
 
-  test("renderChangePrompt is not emitted when not persisting location selection", function () {
+  test("renderChangePrompt is not emitted when not persisting location selection", function() {
     var stub = sinon.stub(ee, "emit");
 
     ee = bootstrap.pubsub;
-    locator = new Locator({pubsub: ee, persistLocation: false});
+    locator = new Locator({ pubsub: ee, persistLocation: false });
     ok(!stub.calledWith("locator:renderChangePrompt"), "Change prompt not rendered");
     stub.restore();
   });
 
-  test("location selected event emitted when not persisting cookie", function(){
-
-    var stub, loc;
+  test("location selected event emitted when not persisting cookie", function() {
+    var stub;
+    var loc;
 
     stub = sinon.stub(ee, "emit");
-    loc = {foo: "bar"};
-    locator = new Locator({pubsub: ee, persistLocation: false});
+    loc = { foo: "bar" };
+    locator = new Locator({ pubsub: ee, persistLocation: false });
     locator.handleLocation(loc);
 
     ok(stub.calledWith("locator:locationSelected", [loc]), "Location selected emitted with object");
@@ -516,36 +547,37 @@ require([
     ok(!locator.confirmLocationSelection, "confirmLocationSelection is false by default");
   });
 
-  test("locator:renderWait is not emitted when confirmLocationSelection is true", function(){
-
+  test("locator:renderWait is not emitted when confirmLocationSelection is true", function() {
     var spy = sinon.spy(ee, "emit");
-    locator = new Locator({confirmLocationSelection: true});
+    
+    locator = new Locator({ confirmLocationSelection: true });
     locator.checkLocation();
     ok(!spy.calledWith("locator:renderWait"), "renderWait is not emitted when confirmLocationSelection is true");
     spy.restore();
   });
 
-  test("More results is hidden when on news region disambiguation page and confirmLocationSelection is true", function(){
-    var response, moreResults;
+  test("More results is hidden when on news region disambiguation page and confirmLocationSelection is true", function (){
+    var response;
+    var moreResults;
 
     response = {
-      "type": "news_regions",
-      "location": {
-        "id": "2654971",
-        "name": "Bradworthy"
+      type     : "news_regions",
+      location : {
+        id   : "2654971",
+        name : "Bradworthy"
       },
-      "regions": [
+      regions  : [
         {
-          "id": "devon",
-          "name": "Devon"
+          id   : "devon",
+          name : "Devon"
         },
         {
-          "id": "cornwall",
-          "name": "Cornwall"
+          id   : "cornwall",
+          name : "Cornwall"
         }
       ]
     };
-    locator = new Locator({confirmLocationSelection: true, pubsub: ee});
+    locator = new Locator({ confirmLocationSelection: true, pubsub: ee });
     locator.open("#locator-container");
     ee.emit("locator:newsLocalRegions", [response]);
 
@@ -553,8 +585,7 @@ require([
     equal(moreResults.style.display, "none", "More results is hidden");
   });
 
-  test("persistUserLocation() sends the correct request when location id and news are passed", function(){
-
+  test("persistUserLocation() sends the correct request when location id and news are passed", function() {
     var expectedUrl;
 
     locator.persistLocation = true;
@@ -563,8 +594,7 @@ require([
     equal(this.requests[0].url, expectedUrl, "Location URL is correct");
   });
 
-  test("persistUserLocation() set the locserv cookie when locationId and newsRegionId passed", function(){
-
+  test("persistUserLocation() set the locserv cookie when locationId and newsRegionId passed", function() {
     var spy;
     spy = sinon.spy(locator, "setCookieString");
     locator.persistUserLocation(2654971, "devon");
@@ -573,43 +603,39 @@ require([
     ok(spy.calledOnce, "locserv cookie set");
   });
 
-  test("persistUserLocation() doesn't send XHR when arguments look like locationSelection", function(){
-
+  test("persistUserLocation() doesn't send XHR when arguments look like locationSelection", function() {
     locator.handleLocation(location);
     locator.persistUserLocation(location.id, location.news.id);
 
     equal(this.requests.length, 0, "No XHR requests where made");
   });
 
-  test("persistUserLocation() doesn't send XHR if locationSelection set and no arguments passed", function(){
-
+  test("persistUserLocation() doesn't send XHR if locationSelection set and no arguments passed", function() {
     locator.handleLocation(location);
     locator.persistUserLocation();
 
     equal(this.requests.length, 0, "No XHR were made");
   });
 
-  test("persistUserLocation() doesn't send XHR when location object passed that is the same as locationSelection", function(){
-
+  test("persistUserLocation() doesn't send XHR when location object passed that is the same as locationSelection", function() {
     locator.handleLocation(location);
     locator.persistUserLocation(location);
 
     equal(this.requests.length, 0, "No XHR requests were made");
   });
 
-  test("persistUserLocation() doesn't make an XHR request when location object passed", function(){
-
+  test("persistUserLocation() doesn't make an XHR request when location object passed", function() {
     locator.persistUserLocation(location);
     equal(this.requests.length, 0, "No XHR was made");
   });
 
-  test("persistUserLocation() sets the locserv cookie when location object passed", function(){
-
+  test("persistUserLocation() sets the locserv cookie when location object passed", function() {
     var spy;
+    
     spy = sinon.spy(locator, "setCookieString");
     locator.persistUserLocation(location);
 
     ok(spy.calledOnce, "Set the locserv cookie");
   });
-});
 
+});
