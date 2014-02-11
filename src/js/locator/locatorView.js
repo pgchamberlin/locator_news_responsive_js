@@ -1,12 +1,11 @@
-/*global define */
 define([
     "module/bootstrap"
   ],
-  function (bootstrap) {
+  function(bootstrap) {
 
-    var locatorUrl,
-        LocatorView,
-        preventDefault;
+    var locatorUrl;
+    var LocatorView;
+    var preventDefault;
 
     locatorUrl = "/locator/default/mobile/en-GB/confirm/";
 
@@ -31,7 +30,6 @@ define([
 
     };
 
-
     /**
      * The view object for locator.
      *
@@ -42,8 +40,8 @@ define([
      * @constructor
      */
     LocatorView = function(selector, options) {
-      var that = this,
-          html = "<div id=\"locator\"><form id=\"locator-form\" action=\"#\">";
+      var self = this;
+      var html = "<div id=\"locator\"><form id=\"locator-form\" action=\"#\">";
 
       options = options || {};
       
@@ -101,13 +99,13 @@ define([
         this.input.placeholder = this.inputPlaceholderMessage;
       } else {
         this.inputFocusHandler = function(e) {
-          if (that.inputPlaceholderMessage === that.input.value) {
-            that.input.value = "";
+          if (self.inputPlaceholderMessage === self.input.value) {
+            self.input.value = "";
           }
         };
         this.inputBlurHandler = function(e) {
-          if ("" === that.input.value) {
-            that.input.value = that.inputPlaceholderMessage;
+          if ("" === self.input.value) {
+            self.input.value = self.inputPlaceholderMessage;
           }
         };
         this.createEventListener(this.input, "focus", this.inputFocusHandler, false);
@@ -119,7 +117,7 @@ define([
         require(
           ["locator/autoCompleteView"],
           function(AutoCompleteView) {
-            that.autoCompleteView = new AutoCompleteView();
+            self.autoCompleteView = new AutoCompleteView();
           }
         );
       }
@@ -131,11 +129,11 @@ define([
       }
 
       this.formHandler = function(e) {
-        var searchTerm = that.input.value;
+        var searchTerm = self.input.value;
         if (0 < searchTerm.length) {
-          that.input.blur();
-          that.clearResults();
-          that.sendSearchData(
+          self.input.blur();
+          self.clearResults();
+          self.sendSearchData(
             searchTerm.toLowerCase(),
             0
           );
@@ -148,11 +146,11 @@ define([
       this.createEventListener(this.form, "submit", this.formHandler, false);
         
       this.resultsHandler = function(e) {
-        var target,
-            url,
-            locationId,
-            newsLocalRegionId,
-            matches;
+        var target;
+        var url;
+        var locationId;
+        var newsLocalRegionId;
+        var matches;
 
         preventDefault(e);
         
@@ -168,7 +166,7 @@ define([
           }
           if (2 <= matches.length) {
             locationId = matches[1];
-            that.sendLocationData(locationId, newsLocalRegionId);
+            self.sendLocationData(locationId, newsLocalRegionId);
           }
         }
 
@@ -183,12 +181,12 @@ define([
 
         preventDefault(e);
 
-        if (that.moreResultsEnabled) {
+        if (self.moreResultsEnabled) {
           bootstrap.$("#locator-results-error").remove();
-          that.disableMoreResults();
-          that.sendSearchData(
-            that.currentResults.searchTerm,
-            that.currentResults.offset + that.currentResults.limit
+          self.disableMoreResults();
+          self.sendSearchData(
+            self.currentResults.searchTerm,
+            self.currentResults.offset + self.currentResults.limit
           );
         }
       };
@@ -200,9 +198,9 @@ define([
 
         this.geolocationClickHandler = function(e) {
           preventDefault(e);
-          if (that.geoLocationEnabled) {
-            that.clearResults();
-            that.disableGeolocation("active");
+          if (self.geoLocationEnabled) {
+            self.clearResults();
+            self.disableGeolocation("active");
             navigator.geolocation.getCurrentPosition(
               function(position) {
                 bootstrap.pubsub.emit("locator:geoLocation", [position]);
@@ -214,13 +212,13 @@ define([
                   message = "Please enable Location Services in your device settings or browser";
                 }
                 
-                that.setMessage(that.geolocationMessage, message, "error");
-                that.enableGeolocation();
+                self.setMessage(self.geolocationMessage, message, "error");
+                self.enableGeolocation();
               },
               {
-                enableHighAccuracy: true,
-                maximumAge: 60,
-                timeout: 10000
+                enableHighAccuracy : true,
+                maximumAge         : 60,
+                timeout            : 10000
               }
             );
           }
@@ -232,447 +230,422 @@ define([
       this.createEventListener(this.changePrompt, "click", function(e) {
         // dropping line to fix sync issue
         bootstrap.pubsub.emit("locator:changeLocationPrompt");
-        that.renderForm();
+        self.renderForm();
         preventDefault(e);
       }, false);
 
-      bootstrap.pubsub.on("locator:searchResults", function(data){
-        that.renderSearchResults(data);
+      bootstrap.pubsub.on("locator:searchResults", function(data) {
+        self.renderSearchResults(data);
       });
 
-      bootstrap.pubsub.on("locator:newsLocalRegions", function(data){
-        that.renderNewsLocalRegions(data);
+      bootstrap.pubsub.on("locator:newsLocalRegions", function(data) {
+        self.renderNewsLocalRegions(data);
       });
 
-      bootstrap.pubsub.on("locator:locationOutOfContext", function(data){
-        that.setMessage(that.searchMessage, null);
-        that.setMessage(
-          that.geolocationMessage,
+      bootstrap.pubsub.on("locator:locationOutOfContext", function(data) {
+        self.setMessage(self.searchMessage, null);
+        self.setMessage(
+          self.geolocationMessage,
           "Sorry, location setting is not available for your location",
           "error"
         );
       });
       
-      bootstrap.pubsub.on("locator:renderForm", function(){
-        that.renderForm();
+      bootstrap.pubsub.on("locator:renderForm", function() {
+        self.renderForm();
       });
 
-      bootstrap.pubsub.on("locator:renderChangePrompt", function(){
-        that.renderStopWait();
-        that.resetForm();
-        that.renderChangePrompt();
+      bootstrap.pubsub.on("locator:renderChangePrompt", function() {
+        self.renderStopWait();
+        self.resetForm();
+        self.renderChangePrompt();
       });
 
-      bootstrap.pubsub.on("locator:renderWait", function(){
-        that.renderWait();
+      bootstrap.pubsub.on("locator:renderWait", function() {
+        self.renderWait();
       });
 
-      bootstrap.pubsub.on("locator:error", function(data, actionType){
-        that.renderError(data, actionType);
+      bootstrap.pubsub.on("locator:error", function(data, actionType) {
+        self.renderError(data, actionType);
       });
     };
 
-    LocatorView.prototype = {
-      
-      /**
-       * Fire off an event to get search results
-       *
-       * @param {String} searchTerm the search term
-       * @return void
-       */
-      sendSearchData: function(searchTerm, offset) {
-        bootstrap.pubsub.emit(
-          "locator:submitSearch",
-          [searchTerm, offset]
-        );
-      },
+    /**
+     * Fire off an event to get search results
+     *
+     * @param {String} searchTerm the search term
+     * @return void
+     */
+    LocatorView.prototype.sendSearchData = function(searchTerm, offset) {
+      bootstrap.pubsub.emit(
+        "locator:submitSearch",
+        [searchTerm, offset]
+      );
+    };
 
-      /**
-       * Fire off an event to send location data
-       *
-       * @param {Number} locationId        the location id
-       * @param {Number} newsLocalRegionId the news region id
-       * @return void
-       */
-      sendLocationData: function(locationId, newsLocalRegionId) {
-        bootstrap.pubsub.emit(
-          "locator:submitLocation",
-          [locationId, newsLocalRegionId]
-        );
-      },
+    /**
+     * Fire off an event to send location data
+     *
+     * @param {Number} locationId        the location id
+     * @param {Number} newsLocalRegionId the news region id
+     * @return void
+     */
+    LocatorView.prototype.sendLocationData = function(locationId, newsLocalRegionId) {
+      bootstrap.pubsub.emit(
+        "locator:submitLocation",
+        [locationId, newsLocalRegionId]
+      );
+    };
 
+    /**
+     * Close the locator widget by removing child element
+     *
+     * @return void
+     */
+    LocatorView.prototype.close = function() {
+      this.elm.parentNode.removeChild(this.elm);
+    };
 
-      /**
-       * Close the locator widget by removing child element
-       *
-       * @return void
-       */
-      close: function() {
-        this.elm.parentNode.removeChild(this.elm);
-      },
+    /**
+     * Clear all search results from DOM.
+     *
+     * @return void
+     */
+    LocatorView.prototype.clearResults = function() {
+      this.setMessage(this.searchMessage, null);
+      this.setMessage(this.geolocationMessage, null);
+      this.currentResults = null;
+      this.results.innerHTML = "";
+      this.moreResults.style.display = "none";
+    };
 
+    /**
+     * Render the change location prompt
+     *
+     * @return void
+     */
+    LocatorView.prototype.renderChangePrompt = function() {
+      this.setFormIsShown(false);
+      this.setChangePromptIsShown(true);
+    };
 
-      /**
-       * Clear all search results from DOM.
-       *
-       * @return void
-       */
-      clearResults: function() {
-        this.setMessage(this.searchMessage, null);
-        this.setMessage(this.geolocationMessage, null);
-        this.currentResults = null;
-        this.results.innerHTML = "";
-        this.moreResults.style.display = "none";
-      },
+    /**
+     * Render the form to its initial state
+     *
+     * @return void
+     */
+    LocatorView.prototype.renderForm = function() {
+      this.setFormIsShown(true);
+      this.setChangePromptIsShown(false);
+      this.resetForm();
+    };
 
+    /**
+     * Reset the form to its initial state
+     *
+     * @return void
+     */
+    LocatorView.prototype.resetForm = function() {
+      this.input.value = this.supportsPlaceholder ? "" : this.inputPlaceholderMessage;
+      this.clearResults();
+      this.setMessage(this.searchMessage, null);
+      this.enableGeolocation();
+    };
 
-      /**
-       * Render the change location prompt
-       *
-       * @return void
-       */
-      renderChangePrompt: function() {
-        this.setFormIsShown(false);
-        this.setChangePromptIsShown(true);
-      },
-      
+    /**
+     * Disable the search form.
+     *
+     * @return void
+     */
+    LocatorView.prototype.disableForm = function() {
+      this.destroyEventListener(this.form, "submit", this.formHandler);
+      this.createEventListener(this.form, "submit", function(e) {
+        preventDefault(e);
+        return false;
+      }, false);
+      bootstrap.$("#locator-search-container").addClass("disabled");
+      bootstrap.$(this.input).attr("disabled", true);
+    };
 
-      /**
-       * Render the form to its initial state
-       *
-       * @return void
-       */
-      renderForm: function() {
-        this.setFormIsShown(true);
-        this.setChangePromptIsShown(false);
-        this.resetForm();
-      },
+    /**
+     * Show/Hide the form.
+     *
+     * @param {Boolean} isShown
+     * @return void
+     */
+    LocatorView.prototype.setFormIsShown = function(isShown) {
+      var display;
+      display = isShown ? "block" : "none";
+      this.form.style.display = display;
+    };
 
+    /**
+     * Set the display property of the change location prompt
+     *
+     * @return void
+     */
+    LocatorView.prototype.setChangePromptIsShown = function(isShown) {
+      this.changePrompt.style.display = isShown ? "block" : "none";
+    };
 
-      /**
-       * Reset the form to its initial state
-       *
-       * @return void
-       */
-      resetForm: function() {
-        this.input.value = this.supportsPlaceholder ? "" : this.inputPlaceholderMessage;
-        this.clearResults();
-        this.setMessage(this.searchMessage, null);
-        this.enableGeolocation();
-      },
+    /**
+     * Enable the more results link
+     *
+     * @return void
+     */
+    LocatorView.prototype.enableMoreResults = function() {
+      this.moreResultsEnabled = true;
+      bootstrap.$(this.moreResults).removeClass("disabled");
+    };
 
+    /**
+     * Disable the more results link
+     *
+     * @return void
+     */
+    LocatorView.prototype.disableMoreResults = function() {
+      this.moreResultsEnabled = false;
+      bootstrap.$(this.moreResults).addClass("disabled");
+    };
 
-      /**
-       * Disable the search form.
-       *
-       * @return void
-       */
-      disableForm: function() {
-        this.destroyEventListener(this.form, "submit", this.formHandler);
-        this.createEventListener(this.form, "submit", function(e) {
-          preventDefault(e);
-          return false;
-        }, false);
-        bootstrap.$("#locator-search-container").addClass("disabled");
-        bootstrap.$(this.input).attr("disabled", true);
-      },
+    /**
+     * Enable the geolocation button
+     *
+     * @return void
+     */
+    LocatorView.prototype.enableGeolocation = function() {
+      this.geoLocationEnabled = true;
+      bootstrap.$(this.geolocation).removeClass("active");
+    };
 
+    /**
+     * Disable the geolocation button
+     *
+     * @return void
+     */
+    LocatorView.prototype.disableGeolocation = function(className) {
+      this.geoLocationEnabled = false;
+      className = className || "disabled";
+      bootstrap.$(this.geolocation).addClass(className);
+    };
 
-      /**
-       * Show/Hide the form.
-       *
-       * @param {Boolean} isShown
-       * @return void
-       */
-      setFormIsShown: function(isShown) {
-        var display;
-        display = isShown ? "block" : "none";
-        this.form.style.display = display;
-      },
+    /**
+     * Prepare a HTMLElement for message display by adding properties.
+     *
+     * @param {HTMLElement} element      the dom element
+     * @param {String}      value        the innerHTML
+     * @param {String}      elementClass the class attribute
+     * @return void
+     */
+    LocatorView.prototype.setMessage = function(element, value, elementClass) {
 
+      if (element) {
 
-      /**
-       * Set the display property of the change location prompt
-       *
-       * @return void
-       */
-      setChangePromptIsShown: function(isShown) {
-        this.changePrompt.style.display = isShown ? "block" : "none";
-      },
-
-
-      /**
-       * Enable the more results link
-       *
-       * @return void
-       */
-      enableMoreResults: function() {
-        this.moreResultsEnabled = true;
-        bootstrap.$(this.moreResults).removeClass("disabled");
-      },
-
-
-      /**
-       * Disable the more results link
-       *
-       * @return void
-       */
-      disableMoreResults: function() {
-        this.moreResultsEnabled = false;
-        bootstrap.$(this.moreResults).addClass("disabled");
-      },
-
-
-      /**
-       * Enable the geolocation button
-       *
-       * @return void
-       */
-      enableGeolocation: function() {
-        this.geoLocationEnabled = true;
-        bootstrap.$(this.geolocation).removeClass("active");
-      },
-
-
-      /**
-       * Disable the geolocation button
-       *
-       * @return void
-       */
-      disableGeolocation: function(className) {
-        this.geoLocationEnabled = false;
-        className = className || "disabled";
-        bootstrap.$(this.geolocation).addClass(className);
-      },
-
-
-      /**
-       * Prepare a HTMLElement for message display by adding properties.
-       *
-       * @param {HTMLElement} element      the dom element
-       * @param {String}      value        the innerHTML
-       * @param {String}      elementClass the class attribute
-       * @return void
-       */
-      setMessage: function(element, value, elementClass) {
-
-        if (element) {
-
-          if (typeof elementClass === "string" && elementClass.length > 0) {
-            element.className = elementClass;
-          }
-
-          element.style.display = (null === value || "" === value) ? "none" : "block";
-          element.innerHTML = value;
-        }
-      },
-
-
-      /**
-       * Render an error on the page.
-       *
-       * @param {Object} data       configuration object literal
-       * @param {String} actionType the message category
-       * @return void
-       */
-      renderError: function(data, actionType){
-        var defaultMessage = "Sorry an error has occurred, please try again";
-
-        if ("autocomplete" !== actionType) {
-          this.renderStopWait();
+        if (typeof elementClass === "string" && elementClass.length > 0) {
+          element.className = elementClass;
         }
 
-        if (data && data.flagpoles) {
-          if (!data.flagpoles.locator) {
-            this.clearResults();
-            this.disableForm();
-            this.disableGeolocation();
-            this.setMessage(
-              this.searchMessage,
-              "Sorry location setting is not currently available",
-              "error"
-            );
-            return;
-          } else if (!data.flagpoles.reverseGeocode) {
-            this.disableGeolocation();
-            this.setMessage(
-              this.geolocationMessage,
-              "Sorry the \"use my current location\" feature is not currently available",
-              "error"
-            );
-            if ("geolocate" === actionType) {
-              return;
-            }
-          }
-        }
+        element.style.display = (null === value || "" === value) ? "none" : "block";
+        element.innerHTML = value;
+      }
+    };
 
-        if ("geolocate" === actionType) {
+    /**
+     * Render an error on the page.
+     *
+     * @param {Object} data       configuration object literal
+     * @param {String} actionType the message category
+     * @return void
+     */
+    LocatorView.prototype.renderError = function(data, actionType) {
+      var defaultMessage = "Sorry an error has occurred, please try again";
+
+      if ("autocomplete" !== actionType) {
+        this.renderStopWait();
+      }
+
+      if (data && data.flagpoles) {
+        if (!data.flagpoles.locator) {
+          this.clearResults();
+          this.disableForm();
+          this.disableGeolocation();
           this.setMessage(
-            this.geolocationMessage,
-            "Sorry an error occurred trying to detect your location. Please try again",
+            this.searchMessage,
+            "Sorry location setting is not currently available",
             "error"
           );
-          this.enableGeolocation();
-        } else if ("search" === actionType && this.currentResults) {
-          bootstrap.$(this.moreResults).after("<p id=\"locator-results-error\" class=\"error\">"  + defaultMessage + "</p>");
-        } else if ("autocomplete" !== actionType) {
-          this.setMessage(this.searchMessage, defaultMessage, "error");
-        }
-      },
-      
-
-      /**
-       * Render the wait message
-       *
-       * @return void
-       */
-      renderWait: function(){
-        if (!this.currentResults) {
-          this.setMessage(this.searchMessage, "Please wait...");
-        }
-      },
-      
-
-      /**
-       * Clear the wait message
-       *
-       * @return void
-       */
-      renderStopWait: function(){
-        if (!this.currentResults) {
-          this.setMessage(this.searchMessage, null);
-        }
-      },
-
-
-      /**
-       * Render search results.
-       *
-       * @param {Object} data json object from the service API
-       * @return void
-       */
-      renderSearchResults: function(data) {
-        var result,
-            index,
-            html = "",
-            url = locatorUrl,
-            qs = "?ptrt=" + window.location,
-            displayMoreResults = false;
-
-        this.currentResults = data;
-
-        this.renderStopWait();
-        this.enableGeolocation();
-
-        if (0 === data.results.length) {
+          return;
+        } else if (!data.flagpoles.reverseGeocode) {
+          this.disableGeolocation();
           this.setMessage(
-            this.searchMessage,
-            "There were no results for \"" + data.searchTerm + "\""
+            this.geolocationMessage,
+            "Sorry the \"use my current location\" feature is not currently available",
+            "error"
           );
-        } else {
-          this.setMessage(
-            this.searchMessage,
-            "Search results:"
-          );
-          for(index=0; index<data.results.length; index++) {
-            result = data.results[index];
-            html += "<li><a href=\"" + url + result.id + qs + "\">" + result.name + "</a></li>";
+          if ("geolocate" === actionType) {
+            return;
           }
-        }
-
-        this.results.style.display = "";
-
-        if (0 === data.offset) {
-          this.results.innerHTML = html;
-          this.setFocusOnFirstResult();
-          displayMoreResults = data.limit < data.total;
-        } else {
-          bootstrap.$(this.results).append(html);
-          displayMoreResults = data.offset + data.limit < data.total;
-        }
-
-        this.moreResults.style.display = displayMoreResults ? "block" : "none";
-
-        if (displayMoreResults) {
-          this.enableMoreResults();
-        }
-      },
-
-
-      /**
-       * Render the local region results
-       *
-       * @param {Object} data the json object returned from the service API
-       * @return void
-       */
-      renderNewsLocalRegions: function(data) {
-        var region,
-            index,
-            html = "",
-            url = locatorUrl + data.location.id + "/",
-            qs = "?ptrt=" + window.location;
-
-        this.renderStopWait();
-        this.enableGeolocation();
-
-        this.setMessage(
-          this.searchMessage,
-          "Your chosen location falls between two News Regions. To set your location," +
-          "please select one of the regions below."
-        );
-
-        for(index=0; index<data.regions.length; index++) {
-          region = data.regions[index];
-          html += "<li><a href=\"" + url + region.id + qs + "\">" + region.name + "</a></li>";
-        }
-        this.results.style.display = "";
-        this.results.innerHTML = html;
-        this.setFocusOnFirstResult();
-      },
-
-
-      /**
-       * Set focus on the first search result
-       *
-       * @return void
-       */
-      setFocusOnFirstResult: function() {
-        var resultsList;
-
-        resultsList = bootstrap.$("#locator-results li a");
-        if (resultsList.length > 0) {
-          resultsList[0].focus();
-        }
-      },
-
-
-      /**
-       * Create a cross-browser event listener
-       *
-       * @return void
-       */
-      createEventListener: function(element, eventType, handler, useCapture) {
-        if (element.addEventListener) {
-          element.addEventListener(eventType, handler, useCapture);
-        } else if (element.attachEvent) {
-          element.attachEvent("on" + eventType, handler);
-        }
-      },
-
-
-      /**
-       * Destroy a cross-browser event listener
-       *
-       * @return void
-       */
-      destroyEventListener: function(element, eventType, handler, useCapture) {
-        if (element.removeEventListener) {
-          element.removeEventListener(eventType, handler, useCapture);
-        } else if (element.detachEvent) {
-          element.detachEvent("on" + eventType, handler);
         }
       }
 
+      if ("geolocate" === actionType) {
+        this.setMessage(
+          this.geolocationMessage,
+          "Sorry an error occurred trying to detect your location. Please try again",
+          "error"
+        );
+        this.enableGeolocation();
+      } else if ("search" === actionType && this.currentResults) {
+        bootstrap.$(this.moreResults).after("<p id=\"locator-results-error\" class=\"error\">"  + defaultMessage + "</p>");
+      } else if ("autocomplete" !== actionType) {
+        this.setMessage(this.searchMessage, defaultMessage, "error");
+      }
+    };
+    
+    /**
+     * Render the wait message
+     *
+     * @return void
+     */
+    LocatorView.prototype.renderWait = function() {
+      if (!this.currentResults) {
+        this.setMessage(this.searchMessage, "Please wait...");
+      }
+    };
+    
+    /**
+     * Clear the wait message
+     *
+     * @return void
+     */
+    LocatorView.prototype.renderStopWait = function() {
+      if (!this.currentResults) {
+        this.setMessage(this.searchMessage, null);
+      }
+    };
+
+    /**
+     * Render search results.
+     *
+     * @param {Object} data json object from the service API
+     * @return void
+     */
+    LocatorView.prototype.renderSearchResults = function(data) {
+      var result;
+      var index;
+      var html = "";
+      var url = locatorUrl;
+      var qs = "?ptrt=" + window.location;
+      var displayMoreResults = false;
+
+      this.currentResults = data;
+
+      this.renderStopWait();
+      this.enableGeolocation();
+
+      if (0 === data.results.length) {
+        this.setMessage(
+          this.searchMessage,
+          "There were no results for \"" + data.searchTerm + "\""
+        );
+      } else {
+        this.setMessage(
+          this.searchMessage,
+          "Search results:"
+        );
+        for (index = 0; index < data.results.length; index++) {
+          result = data.results[index];
+          html += "<li><a href=\"" + url + result.id + qs + "\">" + result.name + "</a></li>";
+        }
+      }
+
+      this.results.style.display = "";
+
+      if (0 === data.offset) {
+        this.results.innerHTML = html;
+        this.setFocusOnFirstResult();
+        displayMoreResults = data.limit < data.total;
+      } else {
+        bootstrap.$(this.results).append(html);
+        displayMoreResults = data.offset + data.limit < data.total;
+      }
+
+      this.moreResults.style.display = displayMoreResults ? "block" : "none";
+
+      if (displayMoreResults) {
+        this.enableMoreResults();
+      }
+    };
+
+    /**
+     * Render the local region results
+     *
+     * @param {Object} data the json object returned from the service API
+     * @return void
+     */
+    LocatorView.prototype.renderNewsLocalRegions = function(data) {
+      var region;
+      var index;
+      var html = "";
+      var url = locatorUrl + data.location.id + "/";
+      var qs = "?ptrt=" + window.location;
+
+      this.renderStopWait();
+      this.enableGeolocation();
+
+      this.setMessage(
+        this.searchMessage,
+        "Your chosen location falls between two News Regions. To set your location," +
+        "please select one of the regions below."
+      );
+
+      for (index = 0; index < data.regions.length; index++) {
+        region = data.regions[index];
+        html += "<li><a href=\"" + url + region.id + qs + "\">" + region.name + "</a></li>";
+      }
+      this.results.style.display = "";
+      this.results.innerHTML = html;
+      this.setFocusOnFirstResult();
+    };
+
+    /**
+     * Set focus on the first search result
+     *
+     * @return void
+     */
+    LocatorView.prototype.setFocusOnFirstResult = function() {
+      var resultsList;
+
+      resultsList = bootstrap.$("#locator-results li a");
+      if (resultsList.length > 0) {
+        resultsList[0].focus();
+      }
+    };
+
+    /**
+     * Create a cross-browser event listener
+     *
+     * @return void
+     */
+    LocatorView.prototype.createEventListener = function(element, eventType, handler, useCapture) {
+      if (element.addEventListener) {
+        element.addEventListener(eventType, handler, useCapture);
+      } else if (element.attachEvent) {
+        element.attachEvent("on" + eventType, handler);
+      }
+    };
+
+    /**
+     * Destroy a cross-browser event listener
+     *
+     * @return void
+     */
+    LocatorView.prototype.destroyEventListener = function(element, eventType, handler, useCapture) {
+      if (element.removeEventListener) {
+        element.removeEventListener(eventType, handler, useCapture);
+      } else if (element.detachEvent) {
+        element.detachEvent("on" + eventType, handler);
+      }
     };
 
     return LocatorView;
