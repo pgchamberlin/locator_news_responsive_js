@@ -1,5 +1,3 @@
-/*global require, module, test, expect, ok, equal, deepEqual, notEqual, EventEmitter, jQuery, QUnit, document */
-/*jslint undef: false */
 require([
   "jquery",
   "module/bootstrap",

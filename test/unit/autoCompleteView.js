@@ -1,5 +1,3 @@
-/*global require, module, test, expect, ok, equal, deepEqual, EventEmitter, jQuery, QUnit, sinon, document */
-/*jslint undef: false */
 require([
   "module/bootstrap",
   "locator/autoCompleteView"

@@ -1,4 +1,3 @@
-/*global define */
 define([
     "vendor/istats/istats"
   ],
@@ -194,6 +193,7 @@ define([
      * @return {boolean}
      */
     Stats.hasLocation = function() {
+      var cookie;
       cookie = this.getCookie().match("locserv=(.*?)(;|$)");
       if(!cookie || cookie.length < 2){
         return false;

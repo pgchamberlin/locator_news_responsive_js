@@ -1,4 +1,3 @@
-/*global define */
 define([
     "module/bootstrap"
   ],
@@ -270,13 +269,14 @@ define([
        * @return void
        */
       addSearchResultKeyHandler: function() {
-        that = this;
-
+        var self;
+        
         // is this actually needed? it should not be necessary
         this.removeSearchResultKeyHandler();
-
+        self = this;
+        
         $(document).on("keydown.locatorAutoCompleteSearchResults", function(e) {
-          that.keyDownHandler(e);
+          self.keyDownHandler(e);
         });
       },
 

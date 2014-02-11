@@ -1,4 +1,3 @@
-/*global define */
 define([
     "module/bootstrap",
     "locator/locatorView",

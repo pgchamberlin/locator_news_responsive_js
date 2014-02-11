@@ -9,12 +9,22 @@
   "onevar": true,
   "smarttabs": true,
   "trailing": true,
-  "undef": false, // turn back on
+  "undef": true, // turn back on
   "unused": false, // turn back on
   "laxbreak": false,
   "evil": true, // review use of eval
   "indent": 2,
   "quotmark": "double",
-
-  "node": true
+  "node": true,
+  "browser": true,
+  "globals": {
+    "define": true,
+    "sinon": true,
+    "test": true,
+    "equal": true,
+    "deepEqual": true,
+    "notEqual": true,
+    "ok": true,
+    "expect": true
+  }
 }

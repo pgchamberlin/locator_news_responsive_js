@@ -1,5 +1,3 @@
-/*global require, module, test, expect, ok, equal, deepEqual, EventEmitter, navigator, sinon */
-/*jslint undef: false */
 require([
   "module/bootstrap",
   "locator/stats"

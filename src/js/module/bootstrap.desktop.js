@@ -1,4 +1,3 @@
-/*global define */
 define([
     "jquery-1",
     "vendor/events/pubsub"
