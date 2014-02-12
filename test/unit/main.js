@@ -638,4 +638,15 @@ require([
     ok(spy.calledOnce, "Set the locserv cookie");
   });
 
+  test("Wait message disappears when confirmLocationSelection is set", function(){
+
+    var messageElement = $("#locator-message-search");
+
+    locator.confirmLocationSelection = true;
+    locator.open("#locator-container");
+    ee.emit("locator:locationSelected");
+
+    equal(messageElement.text(), "", "Message has been cleared");
+  });
+
 });
