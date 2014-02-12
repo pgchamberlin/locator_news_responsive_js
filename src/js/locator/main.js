@@ -248,6 +248,7 @@ define([
       options = options || {};
       this.host = options.host || "";
       this.getLocation();
+      this.action = "";
 
       if (options.pubsub) {
         bootstrap.pubsub = options.pubsub;
@@ -286,7 +287,11 @@ define([
             if (!confirmLocationSelection) {
               view.resetForm();
             } else {
-              view.setMessage(view.searchMessage, null);
+              if (self.action === "geolocate") {
+                view.renderConfirmScreen(location);
+              } else if (view.results.children.length === 0) {
+                view.renderSearchResults({results: [location]});
+              }
             }
           });
 
@@ -498,6 +503,8 @@ define([
       var url = this.host + "/locator/news/responsive/search.json?search=" + searchTerm;
       var self = this;
 
+      this.action = "search";
+
       if (offset) {
         url += "&offset=" + offset;
       }
@@ -544,7 +551,7 @@ define([
                 "latitude=" + normaliseCoordinate(latitude) +
                 "&longitude=" + normaliseCoordinate(longitude);
       var self = this;
-
+      this.action = "geolocate";
       bootstrap.pubsub.emit("locator:renderWait");
       doRequest(
         url,

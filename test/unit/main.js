@@ -8,20 +8,19 @@ require([
   var ee;
   var location;
 
-  location = {
-    type    : "location",
-    id      : "2654971",
-    name    : "Bradworthy",
-    news    : {
-      id   : "devon",
-      name : "Devon"
-    },
-    cookie  : "1#l1#i=2654971:n=Bradworthy:h=e@w1#i=2141:p=Bude@d1#1=sw:2=e:3=e:4=6.11@n1#r=17",
-    expires : "1423662577"
-  };
-
   module("Locator (main.js)", {
     setup    : function() {
+      location = {
+        type: "location",
+        id: "2654971",
+        name: "Bradworthy",
+        news: {
+          id: "devon",
+          name: "Devon"
+        },
+        cookie: "1#l1#i=2654971:n=Bradworthy:h=e@w1#i=2141:p=Bude@d1#1=sw:2=e:3=e:4=6.11@n1#r=17",
+        expires: "1423662577"
+      };
       var requests;
       this.requests = requests = [];
       this.xhr = sinon.useFakeXMLHttpRequest();
@@ -289,6 +288,11 @@ require([
     ee.emit.restore();
   });
 
+  test("search() sets the action to search", function(){
+    locator.search("foo");
+    equal(locator.action, "search", "Action set to 'search'");
+  });
+
   test("geoLocate() constructs correct url", function() {
     var expectedUrl;
     var expectedLatitude;
@@ -319,6 +323,12 @@ require([
     locator.geoLocate(12.413288012, -3.4675670);
     equal(this.requests.length, 1, "One request has been made");
     equal(this.requests[0].url, expectedUrl, "The correct url was requested with normalised coordinates");
+  });
+
+  test("geoLocate() sets the action to 'geolocate'", function(){
+
+    locator.geoLocate(0, 0);
+    equal(locator.action, "geolocate", "Action set to 'geolocate");
   });
 
   test("getCookieString() does return a string", function() {
@@ -644,7 +654,7 @@ require([
 
     locator.confirmLocationSelection = true;
     locator.open("#locator-container");
-    ee.emit("locator:locationSelected");
+    ee.emit("locator:locationSelected", [location]);
 
     equal(messageElement.text(), "", "Message has been cleared");
   });

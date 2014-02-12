@@ -80,6 +80,7 @@ define([
               "</div></form>" +
               "<p id=\"locator-message-search\"/>" +
               "<ul id=\"locator-results\"></ul>" +
+              "<p id=\"locator-form-footer\"></p>" +
               "<a id=\"locator-results-more\" href=\"\">Show More</a>" +
               "<a id=\"locator-prompt-change\" href=\"\">Change your location<span class=\"crosshair\"></span></a>" +
               "</div>";
@@ -93,6 +94,7 @@ define([
       this.input = document.getElementById("locator-search-input");
       this.results = document.getElementById("locator-results");
       this.moreResults = document.getElementById("locator-results-more");
+      this.formFooter = document.getElementById("locator-form-footer");
 
       this.supportsPlaceholder = (typeof this.input.placeholder !== "undefined");
       if (this.supportsPlaceholder) {
@@ -344,11 +346,31 @@ define([
     };
 
     /**
+     * Render a confirm screen that shows a single location that is selected
+     *
+     * @param {Object} location the location object
+     */
+    LocatorView.prototype.renderConfirmScreen = function(location) {
+
+      var listItem;
+
+      this.resetForm();
+      this.setMessage(this.searchMessage, "Change your location");
+      listItem = "<li class=\"selected\"><a href=\"#\">" + location.name + "</a></li>";
+      this.results.innerHTML = listItem;
+      this.results.display = "";
+
+      this.formFooter.innerText = "Not your location?";
+      this.formFooter.style.display = "";
+    };
+
+    /**
      * Reset the form to its initial state
      *
      * @return void
      */
     LocatorView.prototype.resetForm = function() {
+      this.formFooter.style.display = "none";
       this.input.value = this.supportsPlaceholder ? "" : this.inputPlaceholderMessage;
       this.clearResults();
       this.setMessage(this.searchMessage, null);
@@ -555,6 +577,7 @@ define([
 
       this.renderStopWait();
       this.enableGeolocation();
+      this.formFooter.style.display = "none";
 
       if (0 === data.results.length) {
         this.setMessage(
@@ -568,7 +591,11 @@ define([
         );
         for (index = 0; index < data.results.length; index++) {
           result = data.results[index];
-          html += "<li><a href=\"" + url + result.id + qs + "\">" + result.name + "</a></li>";
+          if (data.results.length === 1) {
+            html += "<li class=\"selected\"><a href=\"" + url + result.id + qs + "\">" + result.name + "</a></li>";
+          } else {
+            html += "<li><a href=\"" + url + result.id + qs + "\">" + result.name + "</a></li>";
+          }
         }
       }
 
