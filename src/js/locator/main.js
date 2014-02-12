@@ -290,7 +290,7 @@ define([
               if (self.action === "geolocate") {
                 view.renderConfirmScreen(location);
               } else if (view.results.children.length === 0) {
-                view.renderSearchResults({results: [location]});
+                view.renderSearchResults({ results: [location] });
               }
             }
           });

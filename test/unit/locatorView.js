@@ -453,10 +453,10 @@ require([
 
   });
 
-  test("renderSearchResults() makes the list item selected when there's only one result", function(){
+  test("renderSearchResults() makes the list item selected when there's only one result", function() {
 
     var data = {
-      results: [
+      results : [
         { id: 1234, name: "Cardiff" }
       ]
     };
@@ -837,14 +837,14 @@ require([
     equal(view.changePrompt.style.display, "block");
   });
 
-  test("renderConfirmScreen() resets the form", function(){
+  test("renderConfirmScreen() resets the form", function() {
 
     sinon.stub(view, "resetForm");
     view.renderConfirmScreen({});
     ok(view.resetForm.calledOnce, "resetForm() was called once");
   });
 
-  test("renderConfirmScreen() sets the list item as selected", function(){
+  test("renderConfirmScreen() sets the list item as selected", function() {
     view.renderConfirmScreen({});
     ok($(view.results).find("li").hasClass("selected"), "First item is selected");
   });

@@ -11,15 +11,15 @@ require([
   module("Locator (main.js)", {
     setup    : function() {
       location = {
-        type: "location",
-        id: "2654971",
-        name: "Bradworthy",
-        news: {
-          id: "devon",
-          name: "Devon"
+        type    : "location",
+        id      : "2654971",
+        name    : "Bradworthy",
+        news    : {
+          id   : "devon",
+          name : "Devon"
         },
-        cookie: "1#l1#i=2654971:n=Bradworthy:h=e@w1#i=2141:p=Bude@d1#1=sw:2=e:3=e:4=6.11@n1#r=17",
-        expires: "1423662577"
+        cookie  : "1#l1#i=2654971:n=Bradworthy:h=e@w1#i=2141:p=Bude@d1#1=sw:2=e:3=e:4=6.11@n1#r=17",
+        expires : "1423662577"
       };
       var requests;
       this.requests = requests = [];
@@ -288,7 +288,7 @@ require([
     ee.emit.restore();
   });
 
-  test("search() sets the action to search", function(){
+  test("search() sets the action to search", function() {
     locator.search("foo");
     equal(locator.action, "search", "Action set to 'search'");
   });
@@ -325,7 +325,7 @@ require([
     equal(this.requests[0].url, expectedUrl, "The correct url was requested with normalised coordinates");
   });
 
-  test("geoLocate() sets the action to 'geolocate'", function(){
+  test("geoLocate() sets the action to 'geolocate'", function() {
 
     locator.geoLocate(0, 0);
     equal(locator.action, "geolocate", "Action set to 'geolocate");
@@ -648,7 +648,7 @@ require([
     ok(spy.calledOnce, "Set the locserv cookie");
   });
 
-  test("Wait message disappears when confirmLocationSelection is set", function(){
+  test("Wait message disappears when confirmLocationSelection is set", function() {
 
     var messageElement = $("#locator-message-search");
 
