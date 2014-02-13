@@ -283,7 +283,7 @@ define([
             }]);
           }
 
-          bootstrap.pubsub.on("locator:locationSelected", function() {
+          bootstrap.pubsub.on("locator:locationSelected", function(location) {
             if (!confirmLocationSelection) {
               view.resetForm();
             } else {
