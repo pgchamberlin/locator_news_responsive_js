@@ -837,15 +837,15 @@ require([
     equal(view.changePrompt.style.display, "block");
   });
 
-  test("renderConfirmScreen() resets the form", function() {
+  test("renderGeolocationResult() resets the form", function() {
 
     sinon.stub(view, "resetForm");
-    view.renderConfirmScreen({});
+    view.renderGeolocationResult({});
     ok(view.resetForm.calledOnce, "resetForm() was called once");
   });
 
-  test("renderConfirmScreen() sets the list item as selected", function() {
-    view.renderConfirmScreen({});
+  test("renderGeolocationResult() sets the list item as selected", function() {
+    view.renderGeolocationResult({});
     ok($(view.results).find("li").hasClass("selected"), "First item is selected");
   });
 

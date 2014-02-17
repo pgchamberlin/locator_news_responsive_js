@@ -288,7 +288,7 @@ define([
               view.resetForm();
             } else {
               if (self.action === "geolocate") {
-                view.renderConfirmScreen(location);
+                view.renderGeolocationResult(location);
               } else if (view.results.children.length === 0) {
                 view.renderSearchResults({ results: [location] });
               }

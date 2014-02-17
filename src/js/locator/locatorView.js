@@ -348,7 +348,7 @@ define([
      *
      * @param {Object} location the location object
      */
-    LocatorView.prototype.renderConfirmScreen = function(location) {
+    LocatorView.prototype.renderGeolocationResult = function(location) {
 
       var listItem;
 
