@@ -344,7 +344,7 @@ define([
     };
 
     /**
-     * Render a confirm screen that shows a single location that is selected
+     * Render the location selection screen following a geolocation lookup
      *
      * @param {Object} location the location object
      */
