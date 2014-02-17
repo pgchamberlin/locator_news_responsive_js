@@ -80,7 +80,6 @@ define([
               "</div></form>" +
               "<p id=\"locator-message-search\"/>" +
               "<ul id=\"locator-results\"></ul>" +
-              "<p id=\"locator-form-footer\"></p>" +
               "<a id=\"locator-results-more\" href=\"\">Show More</a>" +
               "<a id=\"locator-prompt-change\" href=\"\">Change your location<span class=\"crosshair\"></span></a>" +
               "</div>";
@@ -94,7 +93,6 @@ define([
       this.input = document.getElementById("locator-search-input");
       this.results = document.getElementById("locator-results");
       this.moreResults = document.getElementById("locator-results-more");
-      this.formFooter = document.getElementById("locator-form-footer");
 
       this.supportsPlaceholder = (typeof this.input.placeholder !== "undefined");
       if (this.supportsPlaceholder) {
@@ -355,13 +353,10 @@ define([
       var listItem;
 
       this.resetForm();
-      this.setMessage(this.searchMessage, "Change your location");
+      this.setMessage(this.searchMessage, "Your location");
       listItem = "<li class=\"selected\"><a href=\"#\">" + location.name + "</a></li>";
       this.results.innerHTML = listItem;
       this.results.display = "";
-
-      this.formFooter.innerText = "Not your location?";
-      this.formFooter.style.display = "";
     };
 
     /**
@@ -370,7 +365,6 @@ define([
      * @return void
      */
     LocatorView.prototype.resetForm = function() {
-      this.formFooter.style.display = "none";
       this.input.value = this.supportsPlaceholder ? "" : this.inputPlaceholderMessage;
       this.clearResults();
       this.setMessage(this.searchMessage, null);
@@ -577,7 +571,6 @@ define([
 
       this.renderStopWait();
       this.enableGeolocation();
-      this.formFooter.style.display = "none";
 
       if (0 === data.results.length) {
         this.setMessage(
