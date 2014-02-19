@@ -566,6 +566,7 @@ define([
       var url = locatorUrl;
       var qs = "?ptrt=" + window.location;
       var displayMoreResults = false;
+      var resultItemAttribute = "";
 
       this.currentResults = data;
 
@@ -584,11 +585,9 @@ define([
         );
         for (index = 0; index < data.results.length; index++) {
           result = data.results[index];
-          if (data.results.length === 1) {
-            html += "<li class=\"selected\"><a href=\"" + url + result.id + qs + "\">" + result.name + "</a></li>";
-          } else {
-            html += "<li><a href=\"" + url + result.id + qs + "\">" + result.name + "</a></li>";
-          }
+          resultItemAttribute = (data.results.length === 1) ? " class=\"selected\"" : "";
+          html += "<li" + resultItemAttribute + ">";
+          html += "<a href=\"" + url + result.id + qs + "\">" + result.name + "</a></li>";
         }
       }
 

@@ -255,8 +255,8 @@ define([
       }
 
       this.persistLocation = options.persistLocation || false;
-
-      this.confirmLocationSelection = confirmLocationSelection = !!options.confirmLocationSelection;
+      confirmLocationSelection = !!options.confirmLocationSelection;
+      this.confirmLocationSelection = confirmLocationSelection;
 
       stats = new Stats(bootstrap.pubsub);
       stats.applyEvents();
