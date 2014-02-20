@@ -254,7 +254,7 @@ define([
         bootstrap.pubsub = options.pubsub;
       }
 
-      this.persistLocation = options.persistLocation || false;
+      this._persistLocation = options.persistLocation || false;
       confirmLocationSelection = !!options.confirmLocationSelection;
       this.confirmLocationSelection = confirmLocationSelection;
 
@@ -362,7 +362,7 @@ define([
 
       this.locationSelection = location;
 
-      if (this.persistLocation === true) {
+      if (this._persistLocation === true) {
         this.persistUserLocation(location);
         bootstrap.pubsub.emit("locator:renderChangePrompt");
         bootstrap.pubsub.emit("locator:locationChanged", [this.getLocation()]);
@@ -439,7 +439,7 @@ define([
       var self;
 
       // do not persist location if chosen not to in options
-      if (this.persistLocation === false) {
+      if (this._persistLocation === false) {
         return;
       }
 
