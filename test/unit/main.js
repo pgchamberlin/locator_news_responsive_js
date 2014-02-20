@@ -528,7 +528,7 @@ require([
 
   test("locator does not persist location by default", function() {
     locator = new Locator({ pubsub: bootstrap.pubsub });
-    ok(!locator.persistLocation, "Locator not persisting location by default");
+    ok(!locator._persistLocation, "Locator not persisting location by default");
   });
 
   test("renderChangePrompt is not emitted when not persisting location selection", function() {
@@ -595,55 +595,55 @@ require([
     equal(moreResults.style.display, "none", "More results is hidden");
   });
 
-  test("persistUserLocation() sends the correct request when location id and news are passed", function() {
+  test("persistLocation() sends the correct request when location id and news are passed", function() {
     var expectedUrl;
 
-    locator.persistLocation = true;
-    locator.persistUserLocation(2654971, "devon");
+    locator._persistLocation = true;
+    locator.persistLocation(2654971, "devon");
     expectedUrl = "/locator/news/responsive/location.json?id=2654971&newsRegion=devon";
     equal(this.requests[0].url, expectedUrl, "Location URL is correct");
   });
 
-  test("persistUserLocation() set the locserv cookie when locationId and newsRegionId passed", function() {
+  test("persistLocation() set the locserv cookie when locationId and newsRegionId passed", function() {
     var spy;
     spy = sinon.spy(locator, "setCookieString");
-    locator.persistUserLocation(2654971, "devon");
+    locator.persistLocation(2654971, "devon");
 
     this.requests[0].respond(200, { "Content-Type": "application/json" }, JSON.stringify(location));
     ok(spy.calledOnce, "locserv cookie set");
   });
 
-  test("persistUserLocation() doesn't send XHR when arguments look like locationSelection", function() {
+  test("persistLocation() doesn't send XHR when arguments look like locationSelection", function() {
     locator.handleLocation(location);
-    locator.persistUserLocation(location.id, location.news.id);
+    locator.persistLocation(location.id, location.news.id);
 
     equal(this.requests.length, 0, "No XHR requests where made");
   });
 
-  test("persistUserLocation() doesn't send XHR if locationSelection set and no arguments passed", function() {
+  test("persistLocation() doesn't send XHR if locationSelection set and no arguments passed", function() {
     locator.handleLocation(location);
-    locator.persistUserLocation();
+    locator.persistLocation();
 
     equal(this.requests.length, 0, "No XHR were made");
   });
 
-  test("persistUserLocation() doesn't send XHR when location object passed that is the same as locationSelection", function() {
+  test("persistLocation() doesn't send XHR when location object passed that is the same as locationSelection", function() {
     locator.handleLocation(location);
-    locator.persistUserLocation(location);
+    locator.persistLocation(location);
 
     equal(this.requests.length, 0, "No XHR requests were made");
   });
 
-  test("persistUserLocation() doesn't make an XHR request when location object passed", function() {
-    locator.persistUserLocation(location);
+  test("persistLocation() doesn't make an XHR request when location object passed", function() {
+    locator.persistLocation(location);
     equal(this.requests.length, 0, "No XHR was made");
   });
 
-  test("persistUserLocation() sets the locserv cookie when location object passed", function() {
+  test("persistLocation() sets the locserv cookie when location object passed", function() {
     var spy;
     
     spy = sinon.spy(locator, "setCookieString");
-    locator.persistUserLocation(location);
+    locator.persistLocation(location);
 
     ok(spy.calledOnce, "Set the locserv cookie");
   });

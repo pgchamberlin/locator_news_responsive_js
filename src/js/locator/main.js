@@ -363,7 +363,7 @@ define([
       this.locationSelection = location;
 
       if (this._persistLocation === true) {
-        this.persistUserLocation(location);
+        this.persistLocation(location);
         bootstrap.pubsub.emit("locator:renderChangePrompt");
         bootstrap.pubsub.emit("locator:locationChanged", [this.getLocation()]);
       } else {
@@ -425,7 +425,7 @@ define([
      * Persist a location for the user by setting the locserv cookie. This
      * method can also be called with no arguments and it will set the users
      * location to the one cached when locator:locationSelected was emitted e.g.
-     * locator.persistUserLocation();
+     * locator.persistLocation();
      *
      * @param {String|Number|Object} locationId this can either be a location id
      * in the form of a string or number, or be the location object emitted by
@@ -433,7 +433,7 @@ define([
      * @param {String} newsRegionId
      * @return void
      */
-    Locator.prototype.persistUserLocation = function(locationId, newsRegionId) {
+    Locator.prototype.persistLocation = function(locationId, newsRegionId) {
       var cookieString;
       var url;
       var self;
