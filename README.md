@@ -96,3 +96,26 @@ Type: `String`
 Default: `""`
 
 This is used to prepend a different host to each API call XHR request.
+
+#### API Methods
+
+##### persistLocation
+
+This method will persist a location in the client cookie.
+
+    var locator = new Locator({
+        //.. config
+    })
+
+    locator.persistLocation(12345, 'devon');
+
+The method signature is flexible and provides three ways in which to use it.
+
+```Locator.persistLocation()``` will used the last searched and selected
+location.
+
+```Locator.persistLocation(location)``` where ```location``` is a location
+object passed as an argument in one of the emitted events.
+
+```Locator.persistLocation(locationId, newsRegionId)``` by explicitly passing
+in a location id and a news region id.
