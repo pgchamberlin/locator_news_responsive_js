@@ -241,18 +241,22 @@ define([
       var view;
       var state;
       var stats;
+      var confirmLocationSelection;
 
       self = this;
       state = false;
       options = options || {};
       this.host = options.host || "";
       this.getLocation();
+      this.action = "";
 
       if (options.pubsub) {
         bootstrap.pubsub = options.pubsub;
       }
 
-      this.persistLocation = options.persistLocation || false;
+      this._persistLocation = options.persistLocation || false;
+      confirmLocationSelection = !!options.confirmLocationSelection;
+      this.confirmLocationSelection = confirmLocationSelection;
 
       stats = new Stats(bootstrap.pubsub);
       stats.applyEvents();
@@ -279,8 +283,22 @@ define([
             }]);
           }
 
-          bootstrap.pubsub.on("locator:locationSelected", function() {
-            view.resetForm();
+          bootstrap.pubsub.on("locator:locationSelected", function(location) {
+            if (!confirmLocationSelection) {
+              view.resetForm();
+            } else {
+              if (self.action === "geolocate") {
+                view.renderGeolocationResult(location);
+              } else if (view.results.children.length === 0) {
+                view.renderSearchResults({ results: [location] });
+              }
+            }
+          });
+
+          bootstrap.pubsub.on("locator:newsLocalRegions", function() {
+            if (confirmLocationSelection) {
+              view.setMoreResultsDisplay("none");
+            }
           });
         }
       });
@@ -341,16 +359,11 @@ define([
      * @return void
      */
     Locator.prototype.handleLocation = function(location) {
-      var cookieString;
-      if (location.cookie && location.expires && this.persistLocation === true) {
-        cookieString = "locserv=" + location.cookie +
-                       "; expires=" + (new Date(location.expires * 1000)).toUTCString() +
-                       "; path=/; domain=.bbc.co.uk";
-        this.setCookieString(cookieString);
-        this.hasParsedCoookie = false;
-      }
 
-      if (this.persistLocation === true) {
+      this.locationSelection = location;
+
+      if (this._persistLocation === true) {
+        this.persistLocation(location);
         bootstrap.pubsub.emit("locator:renderChangePrompt");
         bootstrap.pubsub.emit("locator:locationChanged", [this.getLocation()]);
       } else {
@@ -367,9 +380,12 @@ define([
      * @return void
      */
     Locator.prototype.checkLocation = function(locationId, newsRegionId) {
-      bootstrap.pubsub.emit("locator:renderWait");
       var self = this;
       var url =  this.host + "/locator/news/responsive/location.json?id=" + locationId;
+      
+      if (!this.confirmLocationSelection) {
+        bootstrap.pubsub.emit("locator:renderWait");
+      }
       
       if (newsRegionId) {
         url += "&newsRegion=" + newsRegionId;
@@ -406,6 +422,77 @@ define([
     };
 
     /**
+     * Persist a location for the user by setting the locserv cookie. This
+     * method can also be called with no arguments and it will set the users
+     * location to the one cached when locator:locationSelected was emitted e.g.
+     * locator.persistLocation();
+     *
+     * @param {String|Number|Object} locationId this can either be a location id
+     * in the form of a string or number, or be the location object emitted by
+     * locator:locationSelected event
+     * @param {String} newsRegionId
+     * @return void
+     */
+    Locator.prototype.persistLocation = function(locationId, newsRegionId) {
+      var cookieString;
+      var url;
+      var self;
+
+      // do not persist location if chosen not to in options
+      if (this._persistLocation === false) {
+        return;
+      }
+
+      self = this;
+
+      // persist the location to the locserv cookie
+      // @param {Object} location the location object
+      function setLocservCookie(location) {
+        location = location || {};
+        if (location.type === "location" && location.cookie && location.expires) {
+          cookieString = "locserv=" + location.cookie +
+            "; expires=" + (new Date(location.expires * 1000)).toUTCString() +
+            "; path=/; domain=.bbc.co.uk";
+          self.setCookieString(cookieString);
+          self.hasParsedCoookie = false;
+        }
+      }
+
+      // if arguments are empty and the locationSelection has been cached, or
+      // if locationId is an object and is the same as the cached location
+      // set the cookie using the cached location (this.selectedLocation)
+      if ((!locationId && !newsRegionId && (typeof this.locationSelection === "object")) ||
+        (typeof locationId === "object" && locationId === this.locationSelection)
+      ) {
+        setLocservCookie(this.locationSelection);
+        return;
+      }
+
+      // if values have been set for locationId and newsRegionId the we need to
+      // make a request
+      if (locationId && newsRegionId) {
+        locationId = (locationId).toString(); // cast to a string as it may be a Number
+        // check if there is a cached location and it looks the same as the one
+        // passed in by the arguments
+        if (this.locationSelection && (this.locationSelection.id === locationId) &&
+          (this.locationSelection.news.id === newsRegionId)
+        ) {
+          setLocservCookie(this.locationSelection);
+          return;
+        }
+
+        url  = this.host + "/locator/news/responsive/location.json?id=" + locationId;
+        url += "&newsRegion=" + newsRegionId;
+        doRequest(url, setLocservCookie, "location");
+        return;
+      }
+
+      if (typeof locationId === "object") {
+        setLocservCookie(locationId);
+      }
+    };
+
+    /**
      * Search for a location and return the news region, geoname id and cookie
      * info
      *
@@ -415,6 +502,8 @@ define([
     Locator.prototype.search = function(searchTerm, offset) {
       var url = this.host + "/locator/news/responsive/search.json?search=" + searchTerm;
       var self = this;
+
+      this.action = "search";
 
       if (offset) {
         url += "&offset=" + offset;
@@ -462,7 +551,7 @@ define([
                 "latitude=" + normaliseCoordinate(latitude) +
                 "&longitude=" + normaliseCoordinate(longitude);
       var self = this;
-
+      this.action = "geolocate";
       bootstrap.pubsub.emit("locator:renderWait");
       doRequest(
         url,

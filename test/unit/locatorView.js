@@ -453,6 +453,18 @@ require([
 
   });
 
+  test("renderSearchResults() makes the list item selected when there's only one result", function() {
+
+    var data = {
+      results : [
+        { id: 1234, name: "Cardiff" }
+      ]
+    };
+
+    view.renderSearchResults(data);
+    ok($(view.results).find("li").hasClass("selected"), "First item is selected");
+  });
+
   test("renderNewsLocalRegions() renders results on page", function() {
     view.renderNewsLocalRegions({
       component : "search",
@@ -638,6 +650,10 @@ require([
   });
 
   /* More Results */
+  test("setMoreResultsDisplay() is a proxy to the elements style", function() {
+    view.setMoreResultsDisplay("");
+    equal(view.moreResults.style.display, "", "More results display style has been set to ''");
+  });
 
   test("enableMoreResults() sets moreResultsEnabled to true", function() {
     view.moreResultsEnabled = false;
@@ -819,6 +835,18 @@ require([
 
     view.setChangePromptIsShown(true);
     equal(view.changePrompt.style.display, "block");
+  });
+
+  test("renderGeolocationResult() resets the form", function() {
+
+    sinon.stub(view, "resetForm");
+    view.renderGeolocationResult({});
+    ok(view.resetForm.calledOnce, "resetForm() was called once");
+  });
+
+  test("renderGeolocationResult() sets the list item as selected", function() {
+    view.renderGeolocationResult({});
+    ok($(view.results).find("li").hasClass("selected"), "First item is selected");
   });
 
 });

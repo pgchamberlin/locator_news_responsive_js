@@ -6,9 +6,21 @@ require([
 
   var locator;
   var ee;
+  var location;
 
   module("Locator (main.js)", {
     setup    : function() {
+      location = {
+        type    : "location",
+        id      : "2654971",
+        name    : "Bradworthy",
+        news    : {
+          id   : "devon",
+          name : "Devon"
+        },
+        cookie  : "1#l1#i=2654971:n=Bradworthy:h=e@w1#i=2141:p=Bude@d1#1=sw:2=e:3=e:4=6.11@n1#r=17",
+        expires : "1423662577"
+      };
       var requests;
       this.requests = requests = [];
       this.xhr = sinon.useFakeXMLHttpRequest();
@@ -176,7 +188,8 @@ require([
     // mock data
     data = {
       cookie  : "1#l1#i=6690828:n=Stoke+d%27Abernon:h=e@w1#i=4172:p=Dorking@d1#1=l:2=e:3=e:4=2.41@n1#r=66",
-      expires : "1380098448"
+      expires : "1380098448",
+      type    : "location"
     };
 
     locator.hasParsedCoookie = true;
@@ -275,6 +288,11 @@ require([
     ee.emit.restore();
   });
 
+  test("search() sets the action to search", function() {
+    locator.search("foo");
+    equal(locator.action, "search", "Action set to 'search'");
+  });
+
   test("geoLocate() constructs correct url", function() {
     var expectedUrl;
     var expectedLatitude;
@@ -305,6 +323,12 @@ require([
     locator.geoLocate(12.413288012, -3.4675670);
     equal(this.requests.length, 1, "One request has been made");
     equal(this.requests[0].url, expectedUrl, "The correct url was requested with normalised coordinates");
+  });
+
+  test("geoLocate() sets the action to 'geolocate'", function() {
+
+    locator.geoLocate(0, 0);
+    equal(locator.action, "geolocate", "Action set to 'geolocate");
   });
 
   test("getCookieString() does return a string", function() {
@@ -504,7 +528,7 @@ require([
 
   test("locator does not persist location by default", function() {
     locator = new Locator({ pubsub: bootstrap.pubsub });
-    ok(!locator.persistLocation, "Locator not persisting location by default");
+    ok(!locator._persistLocation, "Locator not persisting location by default");
   });
 
   test("renderChangePrompt is not emitted when not persisting location selection", function() {
@@ -527,6 +551,112 @@ require([
 
     ok(stub.calledWith("locator:locationSelected", [loc]), "Location selected emitted with object");
     stub.restore();
+  });
+
+  test("confirmLocationSelection is false by default", function() {
+    ok(!locator.confirmLocationSelection, "confirmLocationSelection is false by default");
+  });
+
+  test("locator:renderWait is not emitted when confirmLocationSelection is true", function() {
+    var spy = sinon.spy(ee, "emit");
+    
+    locator = new Locator({ confirmLocationSelection: true });
+    locator.checkLocation();
+    ok(!spy.calledWith("locator:renderWait"), "renderWait is not emitted when confirmLocationSelection is true");
+    spy.restore();
+  });
+
+  test("More results is hidden when on news region disambiguation page and confirmLocationSelection is true", function() {
+    var response;
+    var moreResults;
+
+    response = {
+      type     : "news_regions",
+      location : {
+        id   : "2654971",
+        name : "Bradworthy"
+      },
+      regions  : [
+        {
+          id   : "devon",
+          name : "Devon"
+        },
+        {
+          id   : "cornwall",
+          name : "Cornwall"
+        }
+      ]
+    };
+    locator = new Locator({ confirmLocationSelection: true, pubsub: ee });
+    locator.open("#locator-container");
+    ee.emit("locator:newsLocalRegions", [response]);
+
+    moreResults = document.getElementById("locator-results-more");
+    equal(moreResults.style.display, "none", "More results is hidden");
+  });
+
+  test("persistLocation() sends the correct request when location id and news are passed", function() {
+    var expectedUrl;
+
+    locator._persistLocation = true;
+    locator.persistLocation(2654971, "devon");
+    expectedUrl = "/locator/news/responsive/location.json?id=2654971&newsRegion=devon";
+    equal(this.requests[0].url, expectedUrl, "Location URL is correct");
+  });
+
+  test("persistLocation() set the locserv cookie when locationId and newsRegionId passed", function() {
+    var spy;
+    spy = sinon.spy(locator, "setCookieString");
+    locator.persistLocation(2654971, "devon");
+
+    this.requests[0].respond(200, { "Content-Type": "application/json" }, JSON.stringify(location));
+    ok(spy.calledOnce, "locserv cookie set");
+  });
+
+  test("persistLocation() doesn't send XHR when arguments look like locationSelection", function() {
+    locator.handleLocation(location);
+    locator.persistLocation(location.id, location.news.id);
+
+    equal(this.requests.length, 0, "No XHR requests where made");
+  });
+
+  test("persistLocation() doesn't send XHR if locationSelection set and no arguments passed", function() {
+    locator.handleLocation(location);
+    locator.persistLocation();
+
+    equal(this.requests.length, 0, "No XHR were made");
+  });
+
+  test("persistLocation() doesn't send XHR when location object passed that is the same as locationSelection", function() {
+    locator.handleLocation(location);
+    locator.persistLocation(location);
+
+    equal(this.requests.length, 0, "No XHR requests were made");
+  });
+
+  test("persistLocation() doesn't make an XHR request when location object passed", function() {
+    locator.persistLocation(location);
+    equal(this.requests.length, 0, "No XHR was made");
+  });
+
+  test("persistLocation() sets the locserv cookie when location object passed", function() {
+    var spy;
+    
+    spy = sinon.spy(locator, "setCookieString");
+    locator.persistLocation(location);
+
+    ok(spy.calledOnce, "Set the locserv cookie");
+  });
+
+  test("Wait message disappears when confirmLocationSelection is set", function() {
+
+    var messageElement = $("#locator-message-search");
+
+    locator.confirmLocationSelection = true;
+    locator.open("#locator-container");
+    ee.emit("locator:locationSelected", [location]);
+
+    equal(messageElement.text(), "", "Message has been cleared");
   });
 
 });

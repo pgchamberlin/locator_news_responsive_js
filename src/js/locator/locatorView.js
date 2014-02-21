@@ -158,7 +158,10 @@ define([
         target.blur();
 
         url = target.href;
-        
+
+        bootstrap.$("li", this).removeClass("selected");
+        bootstrap.$(target).parent("li").addClass("selected");
+
         if (url && 0 < url.length) {
           matches = url.match(/confirm\/(\w{0,2}\d+)\/?(\w+)?/);
           if (3 === matches.length) {
@@ -316,7 +319,7 @@ define([
       this.setMessage(this.geolocationMessage, null);
       this.currentResults = null;
       this.results.innerHTML = "";
-      this.moreResults.style.display = "none";
+      this.setMoreResultsDisplay("none");
     };
 
     /**
@@ -338,6 +341,22 @@ define([
       this.setFormIsShown(true);
       this.setChangePromptIsShown(false);
       this.resetForm();
+    };
+
+    /**
+     * Render the location selection screen following a geolocation lookup
+     *
+     * @param {Object} location the location object
+     */
+    LocatorView.prototype.renderGeolocationResult = function(location) {
+
+      var listItem;
+
+      this.resetForm();
+      this.setMessage(this.searchMessage, "Your location");
+      listItem = "<li class=\"selected\"><a href=\"#\">" + location.name + "</a></li>";
+      this.results.innerHTML = listItem;
+      this.results.display = "";
     };
 
     /**
@@ -451,6 +470,16 @@ define([
     };
 
     /**
+     * Toggle the visibility of the more results button.
+     *
+     * @param {String} display
+     */
+    LocatorView.prototype.setMoreResultsDisplay = function(display) {
+      display = display || "";
+      this.moreResults.style.display = display;
+    };
+
+    /**
      * Render an error on the page.
      *
      * @param {Object} data       configuration object literal
@@ -537,6 +566,7 @@ define([
       var url = locatorUrl;
       var qs = "?ptrt=" + window.location;
       var displayMoreResults = false;
+      var resultItemAttribute = "";
 
       this.currentResults = data;
 
@@ -555,7 +585,9 @@ define([
         );
         for (index = 0; index < data.results.length; index++) {
           result = data.results[index];
-          html += "<li><a href=\"" + url + result.id + qs + "\">" + result.name + "</a></li>";
+          resultItemAttribute = (data.results.length === 1) ? " class=\"selected\"" : "";
+          html += "<li" + resultItemAttribute + ">";
+          html += "<a href=\"" + url + result.id + qs + "\">" + result.name + "</a></li>";
         }
       }
 
@@ -570,7 +602,7 @@ define([
         displayMoreResults = data.offset + data.limit < data.total;
       }
 
-      this.moreResults.style.display = displayMoreResults ? "block" : "none";
+      this.setMoreResultsDisplay(displayMoreResults ? "block" : "none");
 
       if (displayMoreResults) {
         this.enableMoreResults();
