@@ -447,7 +447,7 @@ define([
 
       // persist the location to the locserv cookie
       // @param {Object} location the location object
-      function persistLocation(location) {
+      function setLocservCookie(location) {
         location = location || {};
         if (location.type === "location" && location.cookie && location.expires) {
           cookieString = "locserv=" + location.cookie +
@@ -464,7 +464,7 @@ define([
       if ((!locationId && !newsRegionId && (typeof this.locationSelection === "object")) ||
         (typeof locationId === "object" && locationId === this.locationSelection)
       ) {
-        persistLocation(this.locationSelection);
+        setLocservCookie(this.locationSelection);
         return;
       }
 
@@ -477,18 +477,18 @@ define([
         if (this.locationSelection && (this.locationSelection.id === locationId) &&
           (this.locationSelection.news.id === newsRegionId)
         ) {
-          persistLocation(this.locationSelection);
+          setLocservCookie(this.locationSelection);
           return;
         }
 
         url  = this.host + "/locator/news/responsive/location.json?id=" + locationId;
         url += "&newsRegion=" + newsRegionId;
-        doRequest(url, persistLocation, "location");
+        doRequest(url, setLocservCookie, "location");
         return;
       }
 
       if (typeof locationId === "object") {
-        persistLocation(locationId);
+        setLocservCookie(locationId);
       }
     };
 
