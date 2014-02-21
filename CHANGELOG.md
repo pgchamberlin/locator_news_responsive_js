@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.0 (21 February 2014)
+- Added a persistLocationSelection option
+- Added EVENTS.md doc
+
 ## 0.4.0 (21 January 2014)
 - Added stats for search requests that yield no results
 
