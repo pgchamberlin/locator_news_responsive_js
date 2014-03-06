@@ -448,7 +448,7 @@ define([
      * checking if the url is a *.bbc.co.uk or *.bbc.com domain.
      *
      * @param {String} url the url to check
-     * @return String|false
+     * @return String|Boolean
      */
     Locator.prototype.getCookieDomain = function(url) {
         if (typeof url !== "string") {
