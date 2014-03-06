@@ -428,7 +428,8 @@ define([
      * @return void
      */
     Locator.prototype.setLocServCookie = function(location) {
-        var cookieString, cookieDomain;
+        var cookieString;
+        var cookieDomain;
         location = location || {};
         cookieDomain = this.getCookieDomain(window.location.href);
         if (false === cookieDomain) {
@@ -452,9 +453,9 @@ define([
     Locator.prototype.getCookieDomain = function(url) {
         if (typeof url !== "string") {
           return false;
-        } else if (-1 !== url.indexOf("bbc.co.uk")) {
+        } else if ( -1 !== url.indexOf("bbc.co.uk")) {
           return ".bbc.co.uk";
-        } else if (-1 !== url.indexOf("bbc.com")) {
+        } else if ( -1 !== url.indexOf("bbc.com")) {
           return ".bbc.com";
         } else {
           return false;
@@ -510,7 +511,7 @@ define([
 
         url  = this.host + "/locator/news/responsive/location.json?id=" + locationId;
         url += "&newsRegion=" + newsRegionId;
-        doRequest(url, function(location){
+        doRequest(url, function(location) {
           self.setLocServCookie(location);
         }, "location");
         return;

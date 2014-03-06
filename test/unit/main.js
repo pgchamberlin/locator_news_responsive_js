@@ -597,42 +597,48 @@ require([
   });
 
   test("getCookieDomain() returns .bbc.co.uk for www.bbc.co.uk", function() {
-    var expectedDomain, actualDomain;
+    var expectedDomain;
+    var actualDomain;
     expectedDomain = ".bbc.co.uk";
     actualDomain = locator.getCookieDomain("http://www.bbc.co.uk/news");
     equal(actualDomain, expectedDomain);
   });
 
   test("getCookieDomain() returns .bbc.co.uk for www.live.bbc.co.uk", function() {
-    var expectedDomain, actualDomain;
+    var expectedDomain;
+    var actualDomain;
     expectedDomain = ".bbc.co.uk";
     actualDomain = locator.getCookieDomain("http://www.live.bbc.co.uk");
     equal(actualDomain, expectedDomain);
   });
 
   test("getCookieDomain() returns .bbc.com for www.bbc.com", function() {
-    var expectedDomain, actualDomain;
+    var expectedDomain;
+    var actualDomain;
     expectedDomain = ".bbc.com";
     actualDomain = locator.getCookieDomain("http://www.bbc.com/news");
     equal(actualDomain, expectedDomain);
   });
 
   test("getCookieDomain() returns .bbc.co.uk for www.live.bbc.com", function() {
-    var expectedDomain, actualDomain;
+    var expectedDomain;
+    var actualDomain;
     expectedDomain = ".bbc.com";
     actualDomain = locator.getCookieDomain("http://www.live.bbc.com");
     equal(actualDomain, expectedDomain);
   });
 
   test("getCookieDomain() returns false for www.itv.com", function() {
-    var expectedDomain, actualDomain;
+    var expectedDomain;
+    var actualDomain;
     expectedDomain = false;
     actualDomain = locator.getCookieDomain("http://www.itv.com");
     equal(actualDomain, expectedDomain);
   });
 
   test("getCookieDomain() returns false for null", function() {
-    var expectedDomain, actualDomain;
+    var expectedDomain;
+    var actualDomain;
     expectedDomain = false;
     actualDomain = locator.getCookieDomain(null);
     equal(actualDomain, expectedDomain);
@@ -693,7 +699,8 @@ require([
   });
 
   test("setLocServCookie() calls getCookieDomain() with current url", function() {
-    var spy, expectedUrl;
+    var spy;
+    var expectedUrl;
 
     expectedUrl = window.location.href;
 
@@ -704,7 +711,8 @@ require([
   });
 
   test("setLocServCookie() returns null if no valid cookie domain", function() {
-    var spy, result;
+    var spy;
+    var result;
 
     sinon.stub(locator, "getCookieDomain").returns(false);
     result = locator.setLocServCookie({});
@@ -719,9 +727,9 @@ require([
     spy = sinon.spy(locator, "setCookieString");
     sinon.stub(locator, "getCookieDomain").returns(false);
     locator.setLocServCookie({
-      type: "location",
-      cookie: "foo",
-      expires: "now"
+      type    : "location",
+      cookie  : "foo",
+      expires : "now"
     });
 
     equal(locator.hasParsedCoookie, true, "Set hasParsedCoookie to false");
@@ -735,9 +743,9 @@ require([
     spy = sinon.spy(locator, "setCookieString");
     sinon.stub(locator, "getCookieDomain").returns(".bbc.co.uk");
     locator.setLocServCookie({
-      type: "location",
-      cookie: "foo",
-      expires: "now"
+      type    : "location",
+      cookie  : "foo",
+      expires : "now"
     });
 
     equal(locator.hasParsedCoookie, false, "Did not set hasParsedCoookie to false");
