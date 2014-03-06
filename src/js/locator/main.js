@@ -422,6 +422,46 @@ define([
     };
 
     /**
+     * Persist the location to the locserv cookie
+     * 
+     * @param {Object} location the location object
+     * @return void
+     */
+    Locator.prototype.setLocServCookie = function(location) {
+        var cookieString, cookieDomain;
+        location = location || {};
+        cookieDomain = this.getCookieDomain(window.location.href);
+        if (false === cookieDomain) {
+          return;
+        } else if (location.type === "location" && location.cookie && location.expires) {
+          cookieString = "locserv=" + location.cookie +
+            "; expires=" + (new Date(location.expires * 1000)).toUTCString() +
+            "; path=/; domain=" + cookieDomain;
+          this.setCookieString(cookieString);
+          this.hasParsedCoookie = false;
+        }
+      };
+
+    /**
+     * Returns the domain that should be used when setting the locserv cookie by 
+     * checking if the url is a *.bbc.co.uk or *.bbc.com domain.
+     *
+     * @param {String} url the url to check
+     * @return String|false
+     */
+    Locator.prototype.getCookieDomain = function(url) {
+        if (typeof url !== "string") {
+          return false;
+        } else if (-1 !== url.indexOf("bbc.co.uk")) {
+          return ".bbc.co.uk";
+        } else if (-1 !== url.indexOf("bbc.com")) {
+          return ".bbc.com";
+        } else {
+          return false;
+        }
+      };
+
+    /**
      * Persist a location for the user by setting the locserv cookie. This
      * method can also be called with no arguments and it will set the users
      * location to the one cached when locator:locationSelected was emitted e.g.
@@ -445,26 +485,13 @@ define([
 
       self = this;
 
-      // persist the location to the locserv cookie
-      // @param {Object} location the location object
-      function setLocservCookie(location) {
-        location = location || {};
-        if (location.type === "location" && location.cookie && location.expires) {
-          cookieString = "locserv=" + location.cookie +
-            "; expires=" + (new Date(location.expires * 1000)).toUTCString() +
-            "; path=/; domain=.bbc.co.uk";
-          self.setCookieString(cookieString);
-          self.hasParsedCoookie = false;
-        }
-      }
-
       // if arguments are empty and the locationSelection has been cached, or
       // if locationId is an object and is the same as the cached location
       // set the cookie using the cached location (this.selectedLocation)
       if ((!locationId && !newsRegionId && (typeof this.locationSelection === "object")) ||
         (typeof locationId === "object" && locationId === this.locationSelection)
       ) {
-        setLocservCookie(this.locationSelection);
+        this.setLocServCookie(this.locationSelection);
         return;
       }
 
@@ -477,18 +504,20 @@ define([
         if (this.locationSelection && (this.locationSelection.id === locationId) &&
           (this.locationSelection.news.id === newsRegionId)
         ) {
-          setLocservCookie(this.locationSelection);
+          this.setLocServCookie(this.locationSelection);
           return;
         }
 
         url  = this.host + "/locator/news/responsive/location.json?id=" + locationId;
         url += "&newsRegion=" + newsRegionId;
-        doRequest(url, setLocservCookie, "location");
+        doRequest(url, function(location){
+          self.setLocServCookie(location);
+        }, "location");
         return;
       }
 
       if (typeof locationId === "object") {
-        setLocservCookie(locationId);
+        this.setLocServCookie(locationId);
       }
     };
 
@@ -573,6 +602,17 @@ define([
     };
 
     /**
+     * Set the current cookie string. This is primarily used for stubbing
+     * during for test purposes.
+     *
+     * @param {String} value The value to set the cookie to
+     * @return void
+     */
+    Locator.prototype.setCookieString = function(value) {
+      document.cookie = value;
+    };
+
+    /**
      * Does the current user have multiple regions in their cookie?
      *
      * @return {Array}
@@ -598,17 +638,6 @@ define([
 
       return choices;
 
-    };
-
-    /**
-     * Set the current cookie string. This is primarily used for stubbing
-     * during for test purposes.
-     *
-     * @param {String} value The value to set the cookie to
-     * @return void
-     */
-    Locator.prototype.setCookieString = function(value) {
-      document.cookie = value;
     };
 
     /**

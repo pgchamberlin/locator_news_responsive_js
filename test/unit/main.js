@@ -184,6 +184,7 @@ require([
     this.stub(ee, "emit");
     this.stub(locator, "getLocation");
     this.stub(locator, "setCookieString");
+    this.stub(locator, "getCookieDomain").returns(".bbc.co.uk");
 
     // mock data
     data = {
@@ -595,6 +596,48 @@ require([
     equal(moreResults.style.display, "none", "More results is hidden");
   });
 
+  test("getCookieDomain() returns .bbc.co.uk for www.bbc.co.uk", function() {
+    var expectedDomain, actualDomain;
+    expectedDomain = ".bbc.co.uk";
+    actualDomain = locator.getCookieDomain("http://www.bbc.co.uk/news");
+    equal(actualDomain, expectedDomain);
+  });
+
+  test("getCookieDomain() returns .bbc.co.uk for www.live.bbc.co.uk", function() {
+    var expectedDomain, actualDomain;
+    expectedDomain = ".bbc.co.uk";
+    actualDomain = locator.getCookieDomain("http://www.live.bbc.co.uk");
+    equal(actualDomain, expectedDomain);
+  });
+
+  test("getCookieDomain() returns .bbc.com for www.bbc.com", function() {
+    var expectedDomain, actualDomain;
+    expectedDomain = ".bbc.com";
+    actualDomain = locator.getCookieDomain("http://www.bbc.com/news");
+    equal(actualDomain, expectedDomain);
+  });
+
+  test("getCookieDomain() returns .bbc.co.uk for www.live.bbc.com", function() {
+    var expectedDomain, actualDomain;
+    expectedDomain = ".bbc.com";
+    actualDomain = locator.getCookieDomain("http://www.live.bbc.com");
+    equal(actualDomain, expectedDomain);
+  });
+
+  test("getCookieDomain() returns false for www.itv.com", function() {
+    var expectedDomain, actualDomain;
+    expectedDomain = false;
+    actualDomain = locator.getCookieDomain("http://www.itv.com");
+    equal(actualDomain, expectedDomain);
+  });
+
+  test("getCookieDomain() returns false for null", function() {
+    var expectedDomain, actualDomain;
+    expectedDomain = false;
+    actualDomain = locator.getCookieDomain(null);
+    equal(actualDomain, expectedDomain);
+  });
+
   test("persistLocation() sends the correct request when location id and news are passed", function() {
     var expectedUrl;
 
@@ -606,7 +649,7 @@ require([
 
   test("persistLocation() set the locserv cookie when locationId and newsRegionId passed", function() {
     var spy;
-    spy = sinon.spy(locator, "setCookieString");
+    spy = sinon.spy(locator, "setLocServCookie");
     locator.persistLocation(2654971, "devon");
 
     this.requests[0].respond(200, { "Content-Type": "application/json" }, JSON.stringify(location));
@@ -642,10 +685,63 @@ require([
   test("persistLocation() sets the locserv cookie when location object passed", function() {
     var spy;
     
+    sinon.stub(locator, "getCookieDomain").returns(".bbc.co.uk");
     spy = sinon.spy(locator, "setCookieString");
     locator.persistLocation(location);
 
     ok(spy.calledOnce, "Set the locserv cookie");
+  });
+
+  test("setLocServCookie() calls getCookieDomain() with current url", function() {
+    var spy, expectedUrl;
+
+    expectedUrl = window.location.href;
+
+    spy = sinon.spy(locator, "getCookieDomain");
+    locator.setLocServCookie({});
+
+    ok(spy.calledWith(expectedUrl), "Calls getCookieDomain() with the current url");
+  });
+
+  test("setLocServCookie() returns null if no valid cookie domain", function() {
+    var spy, result;
+
+    sinon.stub(locator, "getCookieDomain").returns(false);
+    result = locator.setLocServCookie({});
+
+    equal(result, null);
+  });
+
+  test("setLocServCookie() does not set cookie if no valid cookie domain", function() {
+    var spy;
+
+    locator.hasParsedCoookie = true;
+    spy = sinon.spy(locator, "setCookieString");
+    sinon.stub(locator, "getCookieDomain").returns(false);
+    locator.setLocServCookie({
+      type: "location",
+      cookie: "foo",
+      expires: "now"
+    });
+
+    equal(locator.hasParsedCoookie, true, "Set hasParsedCoookie to false");
+    equal(spy.callCount, 0, "Called setCookieString()");
+  });
+
+  test("setLocServCookie() sets cookie if valid cookie domain and location", function() {
+    var spy;
+
+    locator.hasParsedCoookie = true;
+    spy = sinon.spy(locator, "setCookieString");
+    sinon.stub(locator, "getCookieDomain").returns(".bbc.co.uk");
+    locator.setLocServCookie({
+      type: "location",
+      cookie: "foo",
+      expires: "now"
+    });
+
+    equal(locator.hasParsedCoookie, false, "Did not set hasParsedCoookie to false");
+    equal(spy.callCount, 1, "Did not call setCookieString()");
   });
 
   test("Wait message disappears when confirmLocationSelection is set", function() {
