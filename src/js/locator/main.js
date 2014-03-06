@@ -431,15 +431,15 @@ define([
         var cookieString;
         var cookieDomain;
         location = location || {};
-        cookieDomain = this.getCookieDomain(window.location.href);
-        if (false === cookieDomain) {
-          return;
-        } else if (location.type === "location" && location.cookie && location.expires) {
-          cookieString = "locserv=" + location.cookie +
-            "; expires=" + (new Date(location.expires * 1000)).toUTCString() +
-            "; path=/; domain=" + cookieDomain;
-          this.setCookieString(cookieString);
-          this.hasParsedCoookie = false;
+        if (location.type === "location" && location.cookie && location.expires) {
+          cookieDomain = this.getCookieDomain(window.location.href);
+          if (false !== cookieDomain) {
+            cookieString = "locserv=" + location.cookie +
+              "; expires=" + (new Date(location.expires * 1000)).toUTCString() +
+              "; path=/; domain=" + cookieDomain;
+            this.setCookieString(cookieString);
+            this.hasParsedCoookie = false;
+          }
         }
       };
 

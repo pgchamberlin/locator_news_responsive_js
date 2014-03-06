@@ -705,7 +705,11 @@ require([
     expectedUrl = window.location.href;
 
     spy = sinon.spy(locator, "getCookieDomain");
-    locator.setLocServCookie({});
+    locator.setLocServCookie({
+      type    : "location",
+      cookie  : "foo",
+      expires : "now"
+    });
 
     ok(spy.calledWith(expectedUrl), "Calls getCookieDomain() with the current url");
   });
