@@ -432,7 +432,7 @@ define([
         var cookieDomain;
         location = location || {};
         if (location.type === "location" && location.cookie && location.expires) {
-          cookieDomain = this.getCookieDomain(window.location.href);
+          cookieDomain = this.getCookieDomain(window.location.hostname);
           if (false !== cookieDomain) {
             cookieString = "locserv=" + location.cookie +
               "; expires=" + (new Date(location.expires * 1000)).toUTCString() +
@@ -447,16 +447,17 @@ define([
      * Returns the domain that should be used when setting the locserv cookie by 
      * checking if the url is a *.bbc.co.uk or *.bbc.com domain.
      *
-     * @param {String} url the url to check
+     * @param {String} hostname the hostname to check
      * @return String|Boolean
      */
-    Locator.prototype.getCookieDomain = function(url) {
-        if (typeof url !== "string") {
+    Locator.prototype.getCookieDomain = function(hostname) {
+        var matches;
+        if (typeof hostname !== "string") {
           return false;
-        } else if ( -1 !== url.indexOf("bbc.co.uk")) {
-          return ".bbc.co.uk";
-        } else if ( -1 !== url.indexOf("bbc.com")) {
-          return ".bbc.com";
+        }
+        matches = hostname.match(/bbc\.co(\.uk|m)$/);
+        if (matches && matches.length === 2) {
+          return "." + matches[0];
         } else {
           return false;
         }

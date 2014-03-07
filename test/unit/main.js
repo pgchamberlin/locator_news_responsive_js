@@ -600,7 +600,7 @@ require([
     var expectedDomain;
     var actualDomain;
     expectedDomain = ".bbc.co.uk";
-    actualDomain = locator.getCookieDomain("http://www.bbc.co.uk/news");
+    actualDomain = locator.getCookieDomain("www.bbc.co.uk");
     equal(actualDomain, expectedDomain);
   });
 
@@ -608,7 +608,15 @@ require([
     var expectedDomain;
     var actualDomain;
     expectedDomain = ".bbc.co.uk";
-    actualDomain = locator.getCookieDomain("http://www.live.bbc.co.uk");
+    actualDomain = locator.getCookieDomain("www.live.bbc.co.uk");
+    equal(actualDomain, expectedDomain);
+  });
+
+  test("getCookieDomain() returns .bbc.co.uk for bbc.com.bbc.co.uk", function() {
+    var expectedDomain;
+    var actualDomain;
+    expectedDomain = ".bbc.co.uk";
+    actualDomain = locator.getCookieDomain("bbc.com.bbc.co.uk");
     equal(actualDomain, expectedDomain);
   });
 
@@ -616,15 +624,23 @@ require([
     var expectedDomain;
     var actualDomain;
     expectedDomain = ".bbc.com";
-    actualDomain = locator.getCookieDomain("http://www.bbc.com/news");
+    actualDomain = locator.getCookieDomain("www.bbc.com");
     equal(actualDomain, expectedDomain);
   });
 
-  test("getCookieDomain() returns .bbc.co.uk for www.live.bbc.com", function() {
+  test("getCookieDomain() returns .bbc.com for www.live.bbc.com", function() {
     var expectedDomain;
     var actualDomain;
     expectedDomain = ".bbc.com";
-    actualDomain = locator.getCookieDomain("http://www.live.bbc.com");
+    actualDomain = locator.getCookieDomain("www.live.bbc.com");
+    equal(actualDomain, expectedDomain);
+  });
+
+  test("getCookieDomain() returns .bbc.com for bbc.co.uk.bbc.com", function() {
+    var expectedDomain;
+    var actualDomain;
+    expectedDomain = ".bbc.com";
+    actualDomain = locator.getCookieDomain("bbc.co.uk.bbc.com");
     equal(actualDomain, expectedDomain);
   });
 
@@ -632,7 +648,15 @@ require([
     var expectedDomain;
     var actualDomain;
     expectedDomain = false;
-    actualDomain = locator.getCookieDomain("http://www.itv.com");
+    actualDomain = locator.getCookieDomain("www.itv.com");
+    equal(actualDomain, expectedDomain);
+  });
+
+  test("getCookieDomain() returns false for www.bbc.co.uk.itv.com", function() {
+    var expectedDomain;
+    var actualDomain;
+    expectedDomain = false;
+    actualDomain = locator.getCookieDomain("www.bbc.co.uk.itv.com");
     equal(actualDomain, expectedDomain);
   });
 
@@ -702,7 +726,7 @@ require([
     var spy;
     var expectedUrl;
 
-    expectedUrl = window.location.href;
+    expectedUrl = window.location.hostname;
 
     spy = sinon.spy(locator, "getCookieDomain");
     locator.setLocServCookie({
