@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.6.0 (7 March 2014)
+- Added support for setting the locserv cookie on bbc.com domains
+
 ## 0.5.0 (21 February 2014)
 - Added a persistLocationSelection option
 - Added EVENTS.md doc
