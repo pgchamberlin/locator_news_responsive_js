@@ -627,7 +627,7 @@ define([
 
       this.setMessage(
         this.searchMessage,
-        "Your chosen location falls between two News Regions. To set your location," +
+        "Your chosen location falls between two News Regions. To set your location, " +
         "please select one of the regions below."
       );
 
